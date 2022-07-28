@@ -116,6 +116,8 @@ order by a.id,a.colorder";
 
             var list = new List<ColumnEntity>();
             IEnumerable<dynamic> data = DataBase.Query(sql, new { Name });
+            var indexList = GetIndexEntityList();
+            var keyName = indexList.FirstOrDefault(f => f.Type == IndexType.PrimaryKey)?.Columns;
             foreach (var row in data)
             {
                 var model = new ColumnEntity();
@@ -167,16 +169,30 @@ order by a.id,a.colorder";
                     model.DbLength = row.ColumnLength.ToString();
                 }
 
-                if (row.IsKey == 1)
+                if (!string.IsNullOrEmpty(keyName))
                 {
-                    tb.PrimaryKey = model.Name;
-                    if (row.IsIdentity == 1)
+                    if (model.Name.ToLower() == keyName.ToLower())
                     {
-                        tb.IsIdentity = true;
+                        tb.PrimaryKey = model.Name;
+                        if (row.IsIdentity == 1)
+                        {
+                            tb.IsIdentity = true;
+                        }
+                        tb.PrimaryKeyType = model.CsType;
                     }
-                    tb.PrimaryKeyType = model.CsType;
                 }
-
+                else
+                {
+                    if (row.IsKey == 1)
+                    {
+                        tb.PrimaryKey = model.Name;
+                        if (row.IsIdentity == 1)
+                        {
+                            tb.IsIdentity = true;
+                        }
+                        tb.PrimaryKeyType = model.CsType;
+                    }
+                }
                 list.Add(model);
             }
             return list;
