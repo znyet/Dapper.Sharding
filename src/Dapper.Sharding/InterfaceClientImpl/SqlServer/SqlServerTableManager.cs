@@ -118,11 +118,13 @@ order by a.id,a.colorder";
             IEnumerable<dynamic> data = DataBase.Query(sql, new { Name });
             var indexList = GetIndexEntityList();
             var keyName = indexList.FirstOrDefault(f => f.Type == IndexType.PrimaryKey)?.Columns;
-            if (keyName.Contains(","))//如果是复合主键，拿第一个字段做key
+            if (!string.IsNullOrEmpty(keyName))
             {
-                keyName = keyName.Split(',')[0].Trim();
+                if (keyName.Contains(","))//如果是复合主键，拿第一个字段做key
+                {
+                    keyName = keyName.Split(',')[0].Trim();
+                }
             }
-
             foreach (var row in data)
             {
                 var model = new ColumnEntity();
