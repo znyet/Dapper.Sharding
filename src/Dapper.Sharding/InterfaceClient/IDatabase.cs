@@ -1061,7 +1061,7 @@ namespace Dapper.Sharding
 
         #region abstract method
 
-        public abstract string ConnectionString { get; }
+        public abstract string ConnectionString { get; set; }
 
         public abstract IDbConnection GetConn();
 

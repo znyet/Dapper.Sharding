@@ -14,7 +14,7 @@ namespace Dapper.Sharding
             ConnectionString = ConnectionStringBuilder.BuilderClickHouse(config);
         }
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
         public override string GetDatabaseScript(string name, bool useGis = false, string ext = null)
         {

@@ -20,7 +20,7 @@ namespace Dapper.Sharding
             return new MySqlTable<T>(name, this);
         }
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
         public override IDbConnection GetConn()
         {

@@ -15,7 +15,7 @@ namespace Dapper.Sharding
             ConnectionString = ConnectionStringBuilder.BuilderClickHouse(client.Config, name);
         }
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
         public override void DropTable(string name)
         {

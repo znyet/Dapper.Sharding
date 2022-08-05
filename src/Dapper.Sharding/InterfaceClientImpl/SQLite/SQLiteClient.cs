@@ -23,7 +23,7 @@ namespace Dapper.Sharding
             ConnectionString = config.Server;
         }
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
         #region protected method
 

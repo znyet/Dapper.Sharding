@@ -64,6 +64,21 @@ namespace Test
         }
 
         [Test]
+        public void BeginTran3()
+        {
+            var db = Factory.Client.GetDatabase("z1");
+            var student = db.GetTable<Student>("student");
+
+            //简化tran使用,这边如果使用using 就不用Rollback了
+            using var tran = ShardingFactory.CreateDistributedTransaction(); 
+
+            var model = new Student { Id = ShardingFactory.NextObjectId(), Name = "李四" };
+            student.Insert(model, tran);
+
+            tran.Commit();//提交事务
+        }
+
+        [Test]
         public void Insert()
         {
             var p = new People

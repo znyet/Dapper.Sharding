@@ -15,7 +15,7 @@ namespace Dapper.Sharding
             ConnectionString = ConnectionStringBuilder.BuilderPostgresql(client.Config, name);
         }
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
         protected override ITable<T> CreateITable<T>(string name)
         {

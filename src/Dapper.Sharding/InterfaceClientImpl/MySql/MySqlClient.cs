@@ -26,7 +26,7 @@ namespace Dapper.Sharding
 
         #endregion
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
 
         public override IDbConnection GetConn()

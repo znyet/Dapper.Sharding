@@ -26,7 +26,7 @@ namespace Dapper.Sharding
             ConnectionString = ConnectionStringBuilder.BuilderOracleSysdba(config);
         }
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
 
         #region protected method

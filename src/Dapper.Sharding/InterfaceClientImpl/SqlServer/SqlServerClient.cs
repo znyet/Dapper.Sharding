@@ -24,7 +24,7 @@ namespace Dapper.Sharding
             ConnectionString = ConnectionStringBuilder.BuilderSqlServer(config);
         }
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
 
         #region protected method

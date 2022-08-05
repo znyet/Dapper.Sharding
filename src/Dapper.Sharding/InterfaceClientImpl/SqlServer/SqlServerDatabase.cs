@@ -20,7 +20,7 @@ namespace Dapper.Sharding
             return new SqlServerTable<T>(name, this);
         }
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
         public override void DropTable(string name)
         {

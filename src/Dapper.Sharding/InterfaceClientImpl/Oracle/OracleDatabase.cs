@@ -15,7 +15,7 @@ namespace Dapper.Sharding
             ConnectionString = ConnectionStringBuilder.BuilderOracle(client.Config, name);
         }
 
-        public override string ConnectionString { get; }
+        public override string ConnectionString { get; set; }
 
         public override ITableManager GetTableManager(string name)
         {

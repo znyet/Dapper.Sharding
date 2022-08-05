@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Dapper.Sharding
 {
-    public class DistributedTransaction
+    public class DistributedTransaction : IDisposable
     {
         private IDatabase defaultDb = null;
         private (IDbConnection, IDbTransaction) defaultVal = default;
         private Dictionary<IDatabase, (IDbConnection, IDbTransaction)> dict = null;
 
-        private (IDbConnection, IDbTransaction) CreateConnAndTran(IDatabase db)
+        private static (IDbConnection, IDbTransaction) CreateConnAndTran(IDatabase db)
         {
             IDbConnection conn = null;
             IDbTransaction tran = null;
@@ -22,7 +22,7 @@ namespace Dapper.Sharding
                 tran = conn.BeginTransaction();
                 return (conn, tran);
             }
-            catch
+            catch(Exception ex)
             {
                 if (tran != null)
                 {
@@ -32,11 +32,11 @@ namespace Dapper.Sharding
                 {
                     conn.Dispose();
                 }
-                throw;
+                throw ex;
             }
         }
 
-        private async Task<(IDbConnection, IDbTransaction)> CreateConnAndTranAsync(IDatabase db)
+        private static async Task<(IDbConnection, IDbTransaction)> CreateConnAndTranAsync(IDatabase db)
         {
             IDbConnection conn = null;
             IDbTransaction tran = null;
@@ -46,7 +46,7 @@ namespace Dapper.Sharding
                 tran = conn.BeginTransaction();
                 return (conn, tran);
             }
-            catch
+            catch(Exception ex)
             {
                 if (tran != null)
                 {
@@ -56,7 +56,7 @@ namespace Dapper.Sharding
                 {
                     conn.Dispose();
                 }
-                throw;
+                throw ex;
             }
 
         }
@@ -211,6 +211,8 @@ namespace Dapper.Sharding
                 defaultVal.Item2.Dispose();
                 defaultVal.Item1.Dispose();
                 defaultDb = null;
+                defaultVal.Item2 = null;
+                defaultVal.Item1 = null;
             }
             if (dict != null && dict.Count > 0)
             {
@@ -238,7 +240,9 @@ namespace Dapper.Sharding
                     }
                 }
                 dict.Clear();
+                dict = null;
             }
+            done = true;
         }
 
         public void Rollback()
@@ -256,6 +260,8 @@ namespace Dapper.Sharding
                     defaultVal.Item1.Dispose();
                 }
                 defaultDb = null;
+                defaultVal.Item2 = null;
+                defaultVal.Item1 = null;
             }
             if (dict != null && dict.Count > 0)
             {
@@ -274,7 +280,39 @@ namespace Dapper.Sharding
                     }
                 }
                 dict.Clear();
+                dict = null;
+            }
+            done = true;
+        }
+
+        private bool done = false;
+
+        #region Dispose
+
+        private bool disposedValue;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (!done)
+                    {
+                        Rollback();
+                    }
+                }
+                disposedValue = true;
             }
         }
+
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }
