@@ -59,7 +59,8 @@ namespace Dapper.Sharding
 
         public override List<IndexEntity> GetIndexEntityList()
         {
-            IEnumerable<dynamic> data = DataBase.Query($"EXEC sp_helpindex '{DataBase.Name}.dbo.{Name}'");
+            //IEnumerable<dynamic> data = DataBase.Query($"EXEC sp_helpindex '{DataBase.Name}.dbo.{Name}'");
+            IEnumerable<dynamic> data = DataBase.Query($"EXEC sp_helpindex [{Name}]");
             var list = new List<IndexEntity>();
             foreach (var row in data)
             {
