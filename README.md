@@ -214,3 +214,15 @@ NpgsqlGeoJsonFactory.UseGeoJson();
 NpgsqlConnection.GlobalTypeMapper.UseNetTopologySuite();
 NpgsqlGeoFactory.UseGeo();
 ```
+
+```csharp
+//Npgsql GeoJson
+NpgsqlConnection.GlobalTypeMapper.UseGeoJson();
+NpgsqlGeoJsonFactory.UseGeoJson();
+```
+
+```csharp
+//Npgsql DateTimeOffset
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+```

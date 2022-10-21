@@ -77,14 +77,14 @@ C.INDISPRIMARY pri,
 B.amname
 FROM
 PG_AM B
-LEFT JOIN PG_CLASS F ON B.OID = F.RELAM
-LEFT JOIN PG_STAT_ALL_INDEXES E ON F.OID = E.INDEXRELID
-LEFT JOIN PG_INDEX C ON E.INDEXRELID = C.INDEXRELID
-LEFT OUTER JOIN PG_DESCRIPTION D ON C.INDEXRELID = D.OBJOID,
+LEFT JOIN PG_CLASS F ON B.OID=F.RELAM
+LEFT JOIN PG_STAT_ALL_INDEXES E ON F.OID=E.INDEXRELID
+LEFT JOIN PG_INDEX C ON E.INDEXRELID=C.INDEXRELID
+LEFT OUTER JOIN PG_DESCRIPTION D ON C.INDEXRELID=D.OBJOID,
 PG_INDEXES A
 WHERE
-A.SCHEMANAME = E.SCHEMANAME AND A.TABLENAME = E.RELNAME AND A.INDEXNAME = E.INDEXRELNAME
-AND E.SCHEMANAME = 'public' AND E.RELNAME = '{Name}'";
+A.SCHEMANAME=E.SCHEMANAME AND A.TABLENAME=E.RELNAME AND A.INDEXNAME=E.INDEXRELNAME
+AND E.SCHEMANAME='public' AND E.RELNAME='{Name}'";
 
             var sql2 = $@"select
     i.relname as name,
@@ -93,14 +93,17 @@ from
     pg_class t,
     pg_class i,
     pg_index ix,
-    pg_attribute a
+    pg_attribute a,
+    PG_STAT_ALL_INDEXES dd
 where
     t.oid = ix.indrelid
     and i.oid = ix.indexrelid
+    and dd.INDEXRELID=i.oid
     and a.attrelid = t.oid
     and a.attnum = ANY(ix.indkey)
     and t.relkind = 'r'
-    and t.relname like '{Name}%'
+    and dd.schemaname='public'
+    and t.relname='{Name}'
 group by
     t.relname,
     i.relname
@@ -159,9 +162,11 @@ a.attname as name,
 col_description(a.attrelid,a.attnum) as comment,
 concat_ws('',t.typname,SUBSTRING(format_type(a.atttypid,a.atttypmod) from '\(.*\)')) as type
 FROM pg_class as c,pg_attribute as a, pg_type t
-where c.relname=current_setting('myapp.name') and a.attrelid =c.oid and a.attnum>0 and a.atttypid=t.oid";
+where c.relname=current_setting('myapp.name') and a.attrelid =c.oid and a.attnum>0 and a.atttypid=t.oid 
+and exists(SELECT 1 from PG_STAT_ALL_TABLES WHERE schemaname='public' and RELNAME=current_setting('myapp.name') and relid=c.oid)";
 
             var sql2 = $@"set session myapp.name='{Name}';
+select DISTINCT * FROM(
 select column_name as name,
 case  when position('nextval' in column_default)>0 then 1 else 0 end as IsIdentity, 
 case when b.pk_name is null then 0 else 1 end as IsPK
@@ -172,6 +177,7 @@ left join (
     inner join pg_attribute pg_attr on pg_attr.attrelid = pg_class.oid and  pg_attr.attnum = pg_constraint.conkey[1] 
     inner join pg_type on pg_type.oid = pg_attr.atttypid
     where pg_class.relname = current_setting('myapp.name') and pg_constraint.contype='p' 
+    and exists(SELECT 1 from PG_STAT_ALL_TABLES WHERE schemaname='public' and RELNAME=current_setting('myapp.name') and relid=pg_class.oid)
 ) b on b.colname = information_schema.columns.column_name
 left join (
     select attname,description as DeText from pg_class
@@ -179,7 +185,8 @@ left join (
     left join pg_description pg_desc on pg_desc.objoid = pg_attr.attrelid and pg_desc.objsubid=pg_attr.attnum
     where pg_attr.attnum>0 and pg_attr.attrelid=pg_class.oid and pg_class.relname=current_setting('myapp.name')
 )c on c.attname = information_schema.columns.column_name
-where table_schema='public' and table_name=current_setting('myapp.name') order by ordinal_position asc";
+where table_schema='public' and table_name=current_setting('myapp.name') order by ordinal_position asc
+)as aaa";
 
             IEnumerable<dynamic> data = DataBase.Query(sql1);
             IEnumerable<dynamic> data2 = DataBase.Query(sql2);

@@ -132,7 +132,7 @@
 		<DbType Name="date" To="DateTime" />
 		<DbType Name="interval" To="TimeSpan" />
 		<DbType Name="timestamp" To="DateTime" />
-		<DbType Name="timestamptz" To="DateTime" />
+		<DbType Name="timestamptz" To="DateTimeOffset" />
 		<DbType Name="time" To="TimeSpan" />
 		<DbType Name="timetz" To="DateTimeOffset" />
 		<DbType Name="bytea" To="byte[]" />

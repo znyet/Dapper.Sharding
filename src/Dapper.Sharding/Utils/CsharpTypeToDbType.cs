@@ -642,7 +642,7 @@ namespace Dapper.Sharding
                 {
                     length = 6;
                 }
-                return $"timetz({length})";
+                return $"timestamptz({length})";
             }
 
             if (type == typeof(TimeSpan))

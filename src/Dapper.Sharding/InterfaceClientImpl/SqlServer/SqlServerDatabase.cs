@@ -24,13 +24,14 @@ namespace Dapper.Sharding
 
         public override void DropTable(string name)
         {
-            Execute($"IF EXISTS(SELECT 1 FROM sysObjects WHERE Id=OBJECT_ID(N'{name}') AND xtype='U')DROP TABLE [{name}]");
+            Execute($"IF EXISTS(SELECT 1 FROM sysObjects WHERE Id=OBJECT_ID(N'{name}') AND xtype='U' AND uid=1)DROP TABLE [{name}]");
             TableCache.TryRemove(name, out _);
         }
 
         public override bool ExistsTable(string name)
         {
-            return ExecuteScalar($"SELECT 1 FROM sysObjects WHERE Id=OBJECT_ID(N'{name}') AND xtype='U'") != null;
+            //return ExecuteScalar($"SELECT 1 FROM sysObjects WHERE Id=OBJECT_ID(N'{name}') AND xtype='U'") != null;
+            return ExecuteScalar<long>($"SELECT COUNT(1) FROM sysObjects WHERE xtype='U' AND uid=1 AND name='{name}'") > 0;
         }
 
         public override IDbConnection GetConn()
@@ -91,7 +92,7 @@ a.name AS Name,
 CONVERT(NVARCHAR(100),isnull(g.[value],'')) AS Comment
 from
 sys.tables a left join sys.extended_properties g
-on (a.object_id = g.major_id AND g.minor_id = 0) where a.Name='{name}'";
+on (a.object_id = g.major_id AND g.minor_id = 0) where a.schema_id=1 AND a.type='U' AND a.Name='{name}'";
             var row = QueryFirstOrDefault(sql);
             entity.Comment = row.Comment;
             return entity;
@@ -99,7 +100,7 @@ on (a.object_id = g.major_id AND g.minor_id = 0) where a.Name='{name}'";
 
         public override IEnumerable<string> GetTableList()
         {
-            return Query<string>($"SELECT name FROM sysObjects WHERE xtype='U'");
+            return Query<string>("SELECT name FROM sysObjects WHERE xtype='U' AND uid=1");
         }
 
         public override ITableManager GetTableManager(string name)
@@ -112,7 +113,7 @@ on (a.object_id = g.major_id AND g.minor_id = 0) where a.Name='{name}'";
             var tableEntity = ClassToTableEntityUtils.Get<T>(Client.DbType);
             var sb = new StringBuilder();
 
-            sb.Append($"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{name}') AND type in (N'U'))");
+            sb.Append($"IF NOT EXISTS (SELECT * FROM sys.objects WHERE name='{name}' AND type='U' AND schema_id=1)");
             sb.Append($"CREATE TABLE [{name}](");
             foreach (var item in tableEntity.ColumnList)
             {

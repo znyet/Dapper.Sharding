@@ -112,7 +112,7 @@ inner join sysobjects d on a.id=d.id and d.xtype='U' and d.name<>'dtproperties'
 left join syscomments e on a.cdefault=e.id 
 left join sys.extended_properties g on a.id=g.major_id and a.colid=g.minor_id 
 left join sys.extended_properties f on d.id=f.major_id and f.minor_id =0 
-where d.name=@Name
+where d.name=@Name and d.uid=1
 order by a.id,a.colorder";
 
             var list = new List<ColumnEntity>();
