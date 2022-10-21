@@ -223,6 +223,7 @@ NpgsqlGeoJsonFactory.UseGeoJson();
 
 ```csharp
 //Npgsql DateTimeOffset
+//https://www.npgsql.org/doc/types/basic.html
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 ```
