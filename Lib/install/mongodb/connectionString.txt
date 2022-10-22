@@ -1,0 +1,22 @@
+<add name="MongodbConnecttionString" connectionString="mongodb://127.0.0.1/?safe=true"/>
+<add name="MongodbConnecttionString" connectionString="mongodb://root:123456@127.0.0.1:27017/?authSource=admin"/>
+
+
+==================================================
+
+roles 用户角色:
+
+1. 数据库用户角色：read、readWrite;
+2. 数据库管理角色：dbAdmin、dbOwner、userAdmin；
+3. 集群管理角色：clusterAdmin、clusterManager、clusterMonitor、hostManager；
+4. 备份恢复角色：backup、restore；
+5. 所有数据库角色：readAnyDatabase、readWriteAnyDatabase、userAdminAnyDatabase、dbAdminAnyDatabase
+6. 超级用户角色：root
+
+//超级管理员相当于mysql的root
+use admin
+db.createUser({user:"root",pwd:"123456",roles:[{role:"root",db:"admin"}]})
+
+//test 数据库
+use test
+db.createUser({user:"test",pwd:"123456",roles:[{role:"dbOwner",db:"test"}]})
