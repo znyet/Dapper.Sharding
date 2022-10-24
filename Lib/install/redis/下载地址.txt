@@ -1,5 +1,7 @@
 https://github.com/tporadowski/redis
 
-�汾
+https://github.com/zkteco-home/redis-windows
+
+汾
 https://github.com/MSOpenTech/redis/releases
 
