@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+#if !CORE
 using System.Data.SqlClient;
+#else
+using Microsoft.Data.SqlClient;
+#endif
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,14 +31,14 @@ namespace Dapper.Sharding
         public override string ConnectionString { get; set; }
 
 
-        #region protected method
+#region protected method
 
         protected override IDatabase CreateIDatabase(string name)
         {
             return new SqlServerDatabase(name, this);
         }
 
-        #endregion
+#endregion
 
         public override string GetDatabaseScript(string name, bool useGis = false, string ext = null)
         {
