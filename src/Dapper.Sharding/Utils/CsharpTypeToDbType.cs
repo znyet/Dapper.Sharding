@@ -474,7 +474,7 @@ namespace Dapper.Sharding
                 return "NUMERIC";
             }
 
-            if (type == typeof(DateTime))
+            if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
             {
                 return "DATETIME";
             }
@@ -794,7 +794,7 @@ namespace Dapper.Sharding
                 return $"NUMBER({length},0)";
             }
 
-            if (type == typeof(DateTime))
+            if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
             {
                 return "TIMESTAMP";
             }
@@ -868,7 +868,7 @@ namespace Dapper.Sharding
                 return "String";
             }
 
-            if (type == typeof(DateTime))
+            if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
             {
                 if (length == -1)
                 {
