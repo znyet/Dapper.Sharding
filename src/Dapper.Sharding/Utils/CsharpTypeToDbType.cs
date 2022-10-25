@@ -776,14 +776,21 @@ namespace Dapper.Sharding
 
             if (type == typeof(decimal))
             {
+                if (length == 0)
+                {
+                    return "NUMBER";
+                }
+
                 var len = length.ToString();
                 if (len.Contains("."))
                 {
                     len = len.Replace(".", ",");
                     return $"NUMBER({len})";
                 }
-                if (length <= 0)
+                if (length < 0)
+                {
                     return "NUMBER(18,2)";
+                }
                 return $"NUMBER({length},0)";
             }
 

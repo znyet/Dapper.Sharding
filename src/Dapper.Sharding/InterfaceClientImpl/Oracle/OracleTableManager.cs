@@ -154,8 +154,20 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                 }
                 else if (t == "NUMBER")
                 {
-                    var len2 = (int)row.len2;
-                    var scale = (int)row.scale;
+                    var len2 = 0;
+                    var scale = 0;
+
+                    try
+                    {
+                        len2 = (int)row.len2;
+                    }
+                    catch { }
+
+                    try 
+                    {
+                        scale = (int)row.scale;
+                    }
+                    catch { }
 
                     model.Length = Convert.ToDouble($"{len2}.{scale}");
                     model.DbLength = len2.ToString();
