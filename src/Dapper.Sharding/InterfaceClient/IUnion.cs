@@ -45,7 +45,7 @@ namespace Dapper.Sharding
             SetSqlServer(query);
             if (string.IsNullOrEmpty(sqlTable))
             {
-                if (db.DbType == DataBaseType.Sqlite)
+                if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
                 {
                     sqlTable += $"SELECT * FROM ({query.GetSql()})";
                 }
@@ -56,7 +56,7 @@ namespace Dapper.Sharding
             }
             else
             {
-                if (db.DbType == DataBaseType.Sqlite)
+                if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
                 {
                     sqlTable += $" UNION SELECT * FROM ({query.GetSql()})";
                 }
@@ -73,7 +73,7 @@ namespace Dapper.Sharding
             SetSqlServer(query);
             if (string.IsNullOrEmpty(sqlTable))
             {
-                if (db.DbType == DataBaseType.Sqlite)
+                if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
                 {
                     sqlTable += $"SELECT * FROM ({query.GetSql()})";
                 }
@@ -84,7 +84,7 @@ namespace Dapper.Sharding
             }
             else
             {
-                if (db.DbType == DataBaseType.Sqlite)
+                if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
                 {
                     sqlTable += $" UNION ALL SELECT * FROM ({query.GetSql()})";
                 }

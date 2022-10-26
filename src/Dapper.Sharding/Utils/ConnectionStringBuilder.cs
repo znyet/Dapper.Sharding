@@ -158,10 +158,11 @@ namespace Dapper.Sharding
             {
                 sb.Append($":{config.Port}");
             }
-            if (!string.IsNullOrEmpty(config.Oracle_ServiceName))
+            if (string.IsNullOrEmpty(config.Oracle_ServiceName))
             {
-                sb.Append($"/{config.Oracle_ServiceName}");
+                config.Oracle_ServiceName = "ORCL";
             }
+            sb.Append($"/{config.Oracle_ServiceName}");
             sb.Append($";user id={config.Oracle_SysUserId}");
             if (!string.IsNullOrEmpty(config.Oracle_SysPassword))
             {
@@ -199,10 +200,11 @@ namespace Dapper.Sharding
             {
                 sb.Append($":{config.Port}");
             }
-            if (!string.IsNullOrEmpty(config.Oracle_ServiceName))
+            if (string.IsNullOrEmpty(config.Oracle_ServiceName))
             {
-                sb.Append($"/{config.Oracle_ServiceName}");
+                config.Oracle_ServiceName = "ORCL";
             }
+            sb.Append($"/{config.Oracle_ServiceName}");
             if (userId != null && userId.ToLower() != config.UserId)
             {
                 config.UserId = userId;

@@ -139,7 +139,12 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                     model.CsStringType = "object";
                     model.CsType = typeof(object);
                 }
-                var len = (int)row.len;
+                var len = 0;
+                try
+                {
+                    len = (int)row.len;
+                }
+                catch { }
 
                 if (t == "VARCHAR2" || t == "NVARCHAR2")
                 {
@@ -156,14 +161,13 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                 {
                     var len2 = 0;
                     var scale = 0;
-
                     try
                     {
                         len2 = (int)row.len2;
                     }
                     catch { }
 
-                    try 
+                    try
                     {
                         scale = (int)row.scale;
                     }

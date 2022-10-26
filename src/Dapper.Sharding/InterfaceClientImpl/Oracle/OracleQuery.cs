@@ -20,7 +20,7 @@ namespace Dapper.Sharding
             }
             else
             {
-                sqlTable = $"{table.Name} AS {asName}";
+                sqlTable = $"{table.Name} {asName}";
                 returnFields = $"{asName}.*";
                 sqlOrderBy = $" ORDER BY {asName}.{primaryKey}";
             }
@@ -32,19 +32,19 @@ namespace Dapper.Sharding
 
         public override IQuery InnerJoin<T>(ITable<T> table, string asName, string on)
         {
-            sqlTable += $" INNER JOIN {table.Name} AS {asName} ON {on}";
+            sqlTable += $" INNER JOIN {table.Name} {asName} ON {on}";
             return this;
         }
 
         public override IQuery LeftJoin<T>(ITable<T> table, string asName, string on)
         {
-            sqlTable += $" LEFT JOIN {table.Name} AS {asName} ON {on}";
+            sqlTable += $" LEFT JOIN {table.Name} {asName} ON {on}";
             return this;
         }
 
         public override IQuery RightJoin<T>(ITable<T> table, string asName, string on)
         {
-            sqlTable += $" RIGHT JOIN {table.Name} AS {asName} ON {on}";
+            sqlTable += $" RIGHT JOIN {table.Name} {asName} ON {on}";
             return this;
         }
 
