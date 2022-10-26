@@ -5,10 +5,10 @@ var config = new DataBaseConfig { Server = "127.0.0.1", UserId = "root", Passwor
 
 //client must be singleton mode(必须是单例模式)
 static IClient client = ShardingFactory.CreateClient(DataBaseType.MySql, config); 
-//client.AutoCreateDatabase = true;
-//client.AutoCreateTable = true;
-//client.AutoCompareTableColumn = false;
-//client.AutoCompareTableColumnDelete = false;
+//client.AutoCreateDatabase = true; //自动创建数据库
+//client.AutoCreateTable = true; //自动创建表
+//client.AutoCompareTableColumn = false; //是否自动对比列
+//client.AutoCompareTableColumnDelete = false; //是否自动对比删除列
 
 var db = client.GetDatabase("test");
 //var db2 = client.GetDatabase("test2"); //this will create test2 database(自由分库)
