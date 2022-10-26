@@ -106,7 +106,7 @@ public static IClient Client = ShardingFactory.CreateClient(DataBaseType.MySql, 
 /*===sqlite need System.Data.SQLite.Core===*/
 //public static IClient Client = ShardingFactory.CreateClient(DataBaseType.Sqlite, new DataBaseConfig { Server = "D:\\DatabaseFile" })
 
-/*===sqlserver need Microsoft.Data.SqlClient≥2.1.5 ===*/
+/*===sqlserver need Microsoft.Data.SqlClient≥2.1.4 ===*/
 //public static IClient Client = ShardingFactory.CreateClient(DataBaseType.SqlServer2008, new DataBaseConfig { Server = ".\\express", UserId = "sa", Password = "123456", Database_Path = "D:\\DatabaseFile" })
 
 /*===clickhouse need ClickHouse.Ado.Dapper ===*/
