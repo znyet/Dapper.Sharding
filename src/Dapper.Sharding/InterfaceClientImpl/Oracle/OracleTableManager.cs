@@ -146,7 +146,8 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                 }
                 catch { }
 
-                if (t == "VARCHAR2" || t == "NVARCHAR2")
+                if (t == "VARCHAR2" || t == "NVARCHAR2" || t == "CHAR" || t == "NCHAR" || t == "VARCHAR" ||
+                    t == "NVARCHAR" || t == "TEXT" || t == "NTEXT")
                 {
                     model.Length = len;
                     model.DbLength = len.ToString();

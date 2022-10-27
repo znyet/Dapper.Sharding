@@ -155,9 +155,9 @@ order by a.relname asc";
                 {
                     sb.Append($"{item.Name.ToLower()} {dbtype}");
 #if CORE6
-                    if (item.CsType.IsValueType && item.CsType != typeof(DateTime) && item.CsType != typeof(DateTimeOffset) && item.CsType != typeof(DateOnly) && item.CsType != typeof(TimeOnly))
+                    if (item.CsType.IsValueType && item.CsType != typeof(DateTime) && item.CsType != typeof(DateTimeOffset) && item.CsType != typeof(DateOnly) && item.CsType != typeof(TimeOnly) && item.CsType != typeof(DateTime?) && item.CsType != typeof(DateTimeOffset?) && item.CsType != typeof(DateOnly?) && item.CsType != typeof(TimeOnly?))
 #else
-                    if (item.CsType.IsValueType && item.CsType != typeof(DateTime) && item.CsType != typeof(DateTimeOffset))
+                    if (item.CsType.IsValueType && item.CsType != typeof(DateTime) && item.CsType != typeof(DateTimeOffset) && item.CsType != typeof(DateTime?) && item.CsType != typeof(DateTimeOffset?))
 #endif
                     {
                         if (item.CsType != typeof(bool))

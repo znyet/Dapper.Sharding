@@ -107,7 +107,7 @@ namespace Dapper.Sharding
 
         private static string CreateSqlServerType(Type type, double length = 0)
         {
-            if (type == typeof(Guid))
+            if (type == typeof(Guid) || type == typeof(Guid?))
             {
                 if (length <= 0)
                 {
@@ -129,42 +129,42 @@ namespace Dapper.Sharding
                 return $"nvarchar({length})";
             }
 
-            if (type == typeof(bool))
+            if (type == typeof(bool) || type == typeof(bool?))
             {
                 return "bit";
             }
 
-            if (type == typeof(byte) || type == typeof(sbyte))
+            if (type == typeof(byte) || type == typeof(sbyte) || type == typeof(byte?) || type == typeof(sbyte?))
             {
                 return "tinyint";
             }
 
-            if (type == typeof(short) || type == typeof(ushort))
+            if (type == typeof(short) || type == typeof(ushort) || type == typeof(short?) || type == typeof(ushort?))
             {
                 return "smallint";
             }
 
-            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint))
+            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint) || type == typeof(int?) || type == typeof(uint?))
             {
                 return "int";
             }
 
-            if (type == typeof(long) || type == typeof(ulong))
+            if (type == typeof(long) || type == typeof(ulong) || type == typeof(long?) || type == typeof(ulong?))
             {
                 return "bigint";
             }
 
-            if (type == typeof(float))
+            if (type == typeof(float) || type == typeof(float?))
             {
                 return "real";
             }
 
-            if (type == typeof(double))
+            if (type == typeof(double) || type == typeof(double?))
             {
                 return "float";
             }
 
-            if (type == typeof(decimal))
+            if (type == typeof(decimal) || type == typeof(decimal?))
             {
                 var len = length.ToString();
                 if (len.Contains("."))
@@ -177,7 +177,7 @@ namespace Dapper.Sharding
                 return $"decimal({length},0)";
             }
 
-            if (type == typeof(DateTime))
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
                 if (length >= 0)
                 {
@@ -194,7 +194,7 @@ namespace Dapper.Sharding
                 return $"datetime";
             }
 
-            if (type == typeof(DateTimeOffset))
+            if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
             {
                 if (length >= 0)
                 {
@@ -207,7 +207,7 @@ namespace Dapper.Sharding
             }
 
 #if CORE6
-            if (type == typeof(DateOnly))
+            if (type == typeof(DateOnly) || type == typeof(DateOnly?))
             {
                 if (ShardingFactory.DateOnlyFormat == DbTypeDateOnly.Date)
                 {
@@ -228,7 +228,7 @@ namespace Dapper.Sharding
                 return "int";
             }
 
-            if (type == typeof(TimeOnly))
+            if (type == typeof(TimeOnly) || type == typeof(TimeOnly?))
             {
                 if (ShardingFactory.TimeOnlyFormat == DbTypeTimeOnly.TimeSpan)
                 {
@@ -263,7 +263,7 @@ namespace Dapper.Sharding
 
         private static string CreateMySqlType(Type type, double length = 0)
         {
-            if (type == typeof(Guid))
+            if (type == typeof(Guid) || type == typeof(Guid?))
             {
                 if (length <= 0)
                 {
@@ -287,42 +287,42 @@ namespace Dapper.Sharding
                 return $"varchar({length})";
             }
 
-            if (type == typeof(bool))
+            if (type == typeof(bool) || type == typeof(bool?))
             {
                 return "bit(1)";
             }
 
-            if (type == typeof(byte) || type == typeof(sbyte))
+            if (type == typeof(byte) || type == typeof(sbyte) || type == typeof(byte?) || type == typeof(sbyte?))
             {
                 return "tinyint(4)";
             }
 
-            if (type == typeof(short) || type == typeof(ushort))
+            if (type == typeof(short) || type == typeof(ushort) || type == typeof(short?) || type == typeof(ushort?))
             {
                 return "smallint(6)";
             }
 
-            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint))
+            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint) || type == typeof(int?) || type == typeof(uint?))
             {
                 return "int(11)";
             }
 
-            if (type == typeof(long) || type == typeof(ulong))
+            if (type == typeof(long) || type == typeof(ulong) || type == typeof(long?) || type == typeof(ulong?))
             {
                 return "bigint(20)";
             }
 
-            if (type == typeof(float))
+            if (type == typeof(float) || type == typeof(float?))
             {
                 return "float";
             }
 
-            if (type == typeof(double))
+            if (type == typeof(double) || type == typeof(double?))
             {
                 return "double";
             }
 
-            if (type == typeof(decimal))
+            if (type == typeof(decimal) || type == typeof(decimal?))
             {
                 var len = length.ToString();
                 if (len.Contains("."))
@@ -335,7 +335,7 @@ namespace Dapper.Sharding
                 return $"decimal({length},0)";
             }
 
-            if (type == typeof(DateTime))
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
                 if (length == 0)
                     return "datetime";
@@ -357,13 +357,13 @@ namespace Dapper.Sharding
 
             }
 
-            if (type == typeof(DateTimeOffset))
+            if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
             {
                 return "timestamp";
             }
 
 #if CORE6
-            if (type == typeof(DateOnly))
+            if (type == typeof(DateOnly) || type == typeof(DateOnly?))
             {
                 if (ShardingFactory.DateOnlyFormat == DbTypeDateOnly.Date)
                 {
@@ -384,7 +384,7 @@ namespace Dapper.Sharding
                 return "int(11)";
             }
 
-            if (type == typeof(TimeOnly))
+            if (type == typeof(TimeOnly) || type == typeof(TimeOnly?))
             {
                 if (ShardingFactory.TimeOnlyFormat == DbTypeTimeOnly.TimeSpan)
                 {
@@ -424,7 +424,7 @@ namespace Dapper.Sharding
 
         private static string CreateSqliteType(Type type)
         {
-            if (type == typeof(Guid))
+            if (type == typeof(Guid) || type == typeof(Guid?))
             {
                 return "TEXT";
             }
@@ -434,53 +434,53 @@ namespace Dapper.Sharding
                 return "TEXT";
             }
 
-            if (type == typeof(bool))
+            if (type == typeof(bool) || type == typeof(bool?))
             {
                 return "NUMERIC";
             }
 
-            if (type == typeof(byte) || type == typeof(sbyte))
+            if (type == typeof(byte) || type == typeof(sbyte) || type == typeof(byte?) || type == typeof(sbyte?))
             {
                 return "NUMERIC";
             }
 
-            if (type == typeof(short) || type == typeof(ushort))
+            if (type == typeof(short) || type == typeof(ushort) || type == typeof(short?) || type == typeof(ushort?))
             {
                 return "NUMERIC";
             }
 
-            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint))
+            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint) || type == typeof(int?) || type == typeof(uint?))
             {
                 return "NUMERIC";
             }
 
-            if (type == typeof(long) || type == typeof(ulong))
+            if (type == typeof(long) || type == typeof(ulong) || type == typeof(long?) || type == typeof(ulong?))
             {
                 return "NUMERIC";
             }
 
-            if (type == typeof(float))
+            if (type == typeof(float) || type == typeof(float?))
             {
                 return "NUMERIC";
             }
 
-            if (type == typeof(double))
+            if (type == typeof(double) || type == typeof(double?))
             {
                 return "NUMERIC";
             }
 
-            if (type == typeof(decimal))
+            if (type == typeof(decimal) || type == typeof(decimal?))
             {
                 return "NUMERIC";
             }
 
-            if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
+            if (type == typeof(DateTime) || type == typeof(DateTimeOffset) || type == typeof(DateTime?) || type == typeof(DateTimeOffset?))
             {
                 return "DATETIME";
             }
 
 #if CORE6
-            if (type == typeof(DateOnly))
+            if (type == typeof(DateOnly) || type == typeof(DateOnly?))
             {
                 if (ShardingFactory.DateOnlyFormat == DbTypeDateOnly.Date)
                 {
@@ -501,7 +501,7 @@ namespace Dapper.Sharding
                 return "NUMERIC";
             }
 
-            if (type == typeof(TimeOnly))
+            if (type == typeof(TimeOnly) || type == typeof(TimeOnly?))
             {
                 if (ShardingFactory.TimeOnlyFormat == DbTypeTimeOnly.TimeSpan)
                 {
@@ -534,7 +534,7 @@ namespace Dapper.Sharding
 
         private static string CreatePostgresqlType(Type type, double length = 0)
         {
-            if (type == typeof(Guid))
+            if (type == typeof(Guid) || type == typeof(Guid?))
             {
                 if (length <= 0)
                 {
@@ -573,42 +573,42 @@ namespace Dapper.Sharding
 
             }
 
-            if (type == typeof(bool))
+            if (type == typeof(bool) || type == typeof(bool?))
             {
                 return "bool";
             }
 
-            if (type == typeof(byte) || type == typeof(sbyte))
+            if (type == typeof(byte) || type == typeof(sbyte) || type == typeof(byte?) || type == typeof(sbyte?))
             {
                 return "int2";
             }
 
-            if (type == typeof(short) || type == typeof(ushort))
+            if (type == typeof(short) || type == typeof(ushort) || type == typeof(short?) || type == typeof(ushort?))
             {
                 return "int2";
             }
 
-            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint))
+            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint) || type == typeof(int?) || type == typeof(uint?))
             {
                 return "int4";
             }
 
-            if (type == typeof(long) || type == typeof(ulong))
+            if (type == typeof(long) || type == typeof(ulong) || type == typeof(long?) || type == typeof(ulong?))
             {
                 return "int8";
             }
 
-            if (type == typeof(float))
+            if (type == typeof(float) || type == typeof(float?))
             {
                 return "float4";
             }
 
-            if (type == typeof(double))
+            if (type == typeof(double) || type == typeof(double?))
             {
                 return "float8";
             }
 
-            if (type == typeof(decimal))
+            if (type == typeof(decimal) || type == typeof(decimal?))
             {
                 var len = length.ToString();
                 if (len.Contains("."))
@@ -621,7 +621,7 @@ namespace Dapper.Sharding
                 return $"numeric({length},0)";
             }
 
-            if (type == typeof(DateTime))
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
                 if (length >= 0)
                 {
@@ -636,7 +636,7 @@ namespace Dapper.Sharding
                 return "date";
             }
 
-            if (type == typeof(DateTimeOffset))
+            if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
             {
                 if (length > 6)
                 {
@@ -645,7 +645,7 @@ namespace Dapper.Sharding
                 return $"timestamptz({length})";
             }
 
-            if (type == typeof(TimeSpan))
+            if (type == typeof(TimeSpan) || type == typeof(TimeSpan?))
             {
                 if (length >= 0)
                     return "time";
@@ -653,7 +653,7 @@ namespace Dapper.Sharding
             }
 
 #if CORE6
-            if (type == typeof(DateOnly))
+            if (type == typeof(DateOnly) || type == typeof(DateOnly?))
             {
                 if (ShardingFactory.DateOnlyFormat == DbTypeDateOnly.Date)
                 {
@@ -674,7 +674,7 @@ namespace Dapper.Sharding
                 return "int4";
             }
 
-            if (type == typeof(TimeOnly))
+            if (type == typeof(TimeOnly) || type == typeof(TimeOnly?))
             {
                 if (ShardingFactory.TimeOnlyFormat == DbTypeTimeOnly.TimeSpan)
                 {
@@ -719,7 +719,7 @@ namespace Dapper.Sharding
 
         private static string CreateOracleType(Type type, double length = 0)
         {
-            if (type == typeof(Guid))
+            if (type == typeof(Guid) || type == typeof(Guid?))
             {
                 if (length <= 0)
                 {
@@ -739,42 +739,42 @@ namespace Dapper.Sharding
 
             }
 
-            if (type == typeof(bool))
+            if (type == typeof(bool) || type == typeof(bool?))
             {
                 return "NUMBER(1)";
             }
 
-            if (type == typeof(byte) || type == typeof(sbyte))
+            if (type == typeof(byte) || type == typeof(sbyte) || type == typeof(byte?) || type == typeof(sbyte?))
             {
                 return "NUMBER(4)";
             }
 
-            if (type == typeof(short) || type == typeof(ushort))
+            if (type == typeof(short) || type == typeof(ushort) || type == typeof(short?) || type == typeof(ushort?))
             {
                 return "NUMBER(4)";
             }
 
-            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint))
+            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint) || type == typeof(int?) || type == typeof(uint?))
             {
                 return "NUMBER(9)";
             }
 
-            if (type == typeof(long) || type == typeof(ulong))
+            if (type == typeof(long) || type == typeof(ulong) || type == typeof(long?) || type == typeof(ulong?))
             {
                 return "NUMBER(19)";
             }
 
-            if (type == typeof(float))
+            if (type == typeof(float) || type == typeof(float?))
             {
                 return "NUMBER(7,3)";
             }
 
-            if (type == typeof(double))
+            if (type == typeof(double) || type == typeof(double?))
             {
                 return "NUMBER(15,5)";
             }
 
-            if (type == typeof(decimal))
+            if (type == typeof(decimal) || type == typeof(decimal?))
             {
                 if (length == 0)
                 {
@@ -794,13 +794,13 @@ namespace Dapper.Sharding
                 return $"NUMBER({length},0)";
             }
 
-            if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
+            if (type == typeof(DateTime) || type == typeof(DateTimeOffset) || type == typeof(DateTime?) || type == typeof(DateTimeOffset?))
             {
                 return "TIMESTAMP";
             }
 
 #if CORE6
-            if (type == typeof(DateOnly))
+            if (type == typeof(DateOnly) || type == typeof(DateOnly?))
             {
                 if (ShardingFactory.DateOnlyFormat == DbTypeDateOnly.Date)
                 {
@@ -821,7 +821,7 @@ namespace Dapper.Sharding
                 return "NUMBER(9)";
             }
 
-            if (type == typeof(TimeOnly))
+            if (type == typeof(TimeOnly) || type == typeof(TimeOnly?))
             {
                 if (ShardingFactory.TimeOnlyFormat == DbTypeTimeOnly.TimeSpan)
                 {
@@ -854,7 +854,7 @@ namespace Dapper.Sharding
 
         private static string CreateClickHouseType(Type type, double length = 0)
         {
-            if (type == typeof(Guid))
+            if (type == typeof(Guid) || type == typeof(Guid?))
             {
                 return $"UUID";
             }
@@ -868,7 +868,7 @@ namespace Dapper.Sharding
                 return "String";
             }
 
-            if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
+            if (type == typeof(DateTime) || type == typeof(DateTimeOffset) || type == typeof(DateTime?) || type == typeof(DateTimeOffset?))
             {
                 if (length == -1)
                 {
@@ -881,27 +881,27 @@ namespace Dapper.Sharding
                 return "Datetime";
             }
 
-            if (type == typeof(float))
+            if (type == typeof(float) || type == typeof(float?))
             {
                 return "Float32";
             }
 
-            if (type == typeof(double))
+            if (type == typeof(double) || type == typeof(double?))
             {
                 return "Float64";
             }
 
-            if (type == typeof(sbyte))
+            if (type == typeof(sbyte) || type == typeof(sbyte?))
             {
                 return "Int8";
             }
 
-            if (type == typeof(short))
+            if (type == typeof(short) || type == typeof(short?))
             {
                 return "Int16";
             }
 
-            if (type == typeof(int) || type.BaseType == typeof(Enum))
+            if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(int?))
             {
                 if (length == -1)
                 {
@@ -914,32 +914,32 @@ namespace Dapper.Sharding
                 return "Int32";
             }
 
-            if (type == typeof(long))
+            if (type == typeof(long) || type == typeof(long?))
             {
                 return "Int64";
             }
 
-            if (type == typeof(byte))
+            if (type == typeof(byte) || type == typeof(byte?))
             {
                 return "UInt8";
             }
 
-            if (type == typeof(ushort))
+            if (type == typeof(ushort) || type == typeof(ushort?))
             {
                 return "UInt16";
             }
 
-            if (type == typeof(uint))
+            if (type == typeof(uint) || type == typeof(uint?))
             {
                 return "UInt32";
             }
 
-            if (type == typeof(ulong))
+            if (type == typeof(ulong) || type == typeof(ulong?))
             {
                 return "UInt64";
             }
 
-            if (type == typeof(decimal))
+            if (type == typeof(decimal) || type == typeof(decimal?))
             {
                 if (length <= 0)
                 {
@@ -978,7 +978,7 @@ namespace Dapper.Sharding
             }
 
 #if CORE6
-            if (type == typeof(DateOnly))
+            if (type == typeof(DateOnly) || type == typeof(DateOnly?))
             {
                 if (ShardingFactory.DateOnlyFormat == DbTypeDateOnly.Date)
                 {
@@ -999,7 +999,7 @@ namespace Dapper.Sharding
                 return "Int32";
             }
 
-            if (type == typeof(TimeOnly))
+            if (type == typeof(TimeOnly) || type == typeof(TimeOnly?))
             {
                 if (ShardingFactory.TimeOnlyFormat == DbTypeTimeOnly.TimeSpan)
                 {
