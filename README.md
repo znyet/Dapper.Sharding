@@ -100,19 +100,19 @@ var data = union.Query<T>();
 ```csharp
 //client must singleton mode(必须是单例模式)
 
-/*===mysql need MySqlConnector===*/
+/*===mysql need MySqlConnector≥1.3.14===*/
 public static IClient Client = ShardingFactory.CreateClient(DataBaseType.MySql, new DataBaseConfig { Server = "127.0.0.1", UserId = "root", Password = "123", Port = 3306 })
 
-/*===sqlite need System.Data.SQLite.Core===*/
+/*===sqlite need System.Data.SQLite.Core≥1.0.115.5===*/
 //public static IClient Client = ShardingFactory.CreateClient(DataBaseType.Sqlite, new DataBaseConfig { Server = "D:\\DatabaseFile" })
 
 /*===sqlserver need Microsoft.Data.SqlClient≥2.1.4 ===*/
 //public static IClient Client = ShardingFactory.CreateClient(DataBaseType.SqlServer2008, new DataBaseConfig { Server = ".\\express", UserId = "sa", Password = "123456", Database_Path = "D:\\DatabaseFile" })
 
-/*===clickhouse need ClickHouse.Ado.Dapper ===*/
+/*===clickhouse need ClickHouse.Ado.Dapper≥1.0.8 ===*/
 //public static IClient ClientHouse = ShardingFactory.CreateClient(DataBaseType.ClickHouse, new DataBaseConfig { Server = "192.168.0.200" });
 
-/*===postgresql need Npgsql===*/
+/*===postgresql need Npgsql≥4.0.12===*/
 //public static IClient Client = ShardingFactory.CreateClient(DataBaseType.Postgresql, new DataBaseConfig { Server = "127.0.0.1", UserId = "postgres", Password = "123" })
 
 /*===oracle need Oracle.ManagedDataAccess.Core===*/
