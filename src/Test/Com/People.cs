@@ -49,5 +49,7 @@ namespace Test
         [JsonString]
         public IList<int> MyJson { get; set; }
 
+        public DateTimeOffset TimeOff { get; set; }
+
     }
 }

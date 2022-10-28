@@ -746,17 +746,17 @@ namespace Dapper.Sharding
 
             if (type == typeof(byte) || type == typeof(sbyte) || type == typeof(byte?) || type == typeof(sbyte?))
             {
-                return "NUMBER(4)";
+                return "NUMBER(3)";
             }
 
             if (type == typeof(short) || type == typeof(ushort) || type == typeof(short?) || type == typeof(ushort?))
             {
-                return "NUMBER(4)";
+                return "NUMBER(5)";
             }
 
             if (type == typeof(int) || type.BaseType == typeof(Enum) || type == typeof(uint) || type == typeof(int?) || type == typeof(uint?))
             {
-                return "NUMBER(9)";
+                return "NUMBER(10)";
             }
 
             if (type == typeof(long) || type == typeof(ulong) || type == typeof(long?) || type == typeof(ulong?))
@@ -794,11 +794,35 @@ namespace Dapper.Sharding
                 return $"NUMBER({length},0)";
             }
 
-            if (type == typeof(DateTime) || type == typeof(DateTimeOffset) || type == typeof(DateTime?) || type == typeof(DateTimeOffset?))
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
-                return "TIMESTAMP";
+                if (length == 0)
+                {
+                    return "DATE";
+                }
+                if (length == -1)
+                {
+                    return "TIMESTAMP";
+                }
+                if (length > 6)
+                {
+                    length = 6;
+                }
+                return $"TIMESTAMP({length})";
             }
 
+            if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
+            {
+                if (length == 0)
+                {
+                    return "TIMESTAMP WITH TIME ZONE";
+                }
+                if (length > 6)
+                {
+                    length = 6;
+                }
+                return $"TIMESTAMP({length}) WITH TIME ZONE";
+            }
 #if CORE6
             if (type == typeof(DateOnly) || type == typeof(DateOnly?))
             {

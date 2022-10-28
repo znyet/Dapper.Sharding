@@ -81,20 +81,24 @@ namespace Test
         [Test]
         public void Insert()
         {
+            TypeHandlerSystemTextJson.Add(typeof(People).Assembly);
             var p = new People
             {
                 Id = DateTime.Now.Millisecond,
                 Name = "李四",
-                Age = 50,
+                Age = 51,
                 AddTime = DateTime.Now,
                 IsAdmin = 1,
                 Text = "你好",
                 Money = 10.5M,
                 Money2 = 10.888F,
-                Money3 = 50.55
+                Money3 = 50.55,
+                TimeOff = DateTime.Now,
+                MyJson = new List<int>() { 1,2,3,4}
 
             };
             Factory.peopleTable.Insert(p);
+            Factory.peopleTable.Insert(new List<People> { p });
             Console.WriteLine(p.Id);
 
             var teacher = new Teacher

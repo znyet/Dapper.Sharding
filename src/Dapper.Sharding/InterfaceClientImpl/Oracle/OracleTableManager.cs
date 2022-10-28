@@ -104,7 +104,7 @@ and col.table_name = '{Name.ToUpper()}'";
         {
             if (tb == null)
                 tb = new TableEntity();
-            var sql = $"SELECT C.COLUMN_NAME AS \"name\",C.DATA_TYPE AS \"type\",C.DATA_LENGTH AS \"len\",C.DATA_PRECISION AS \"len2\",C.DATA_SCALE AS \"scale\",NVL(CC.COMMENTS, C.COLUMN_NAME) AS \"comment\",to_number(CASE WHEN P.COLUMN_NAME = C.COLUMN_NAME THEN '1' ELSE '0' END) AS \"ispri\" ";
+            var sql = $"SELECT C.COLUMN_NAME AS \"name\",C.DATA_TYPE AS \"type\",C.CHAR_LENGTH AS \"len\",C.DATA_PRECISION AS \"len2\",C.DATA_SCALE AS \"scale\",NVL(CC.COMMENTS, C.COLUMN_NAME) AS \"comment\",to_number(CASE WHEN P.COLUMN_NAME = C.COLUMN_NAME THEN '1' ELSE '0' END) AS \"ispri\" ";
             sql += $@"FROM USER_TAB_COLUMNS C
             LEFT JOIN USER_COL_COMMENTS CC ON C.TABLE_NAME = CC.TABLE_NAME AND C.COLUMN_NAME = CC.COLUMN_NAME
 LEFT JOIN(
@@ -126,7 +126,8 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                 }
                 model.Comment = row.comment;
 
-                var t = ((string)row.type).Split('(')[0];
+                var arrStr = ((string)row.type).Split('(');
+                var t = arrStr[0];
                 model.DbType = t;
                 var map = DbCsharpTypeMap.OracleMap.FirstOrDefault(f => f.DbType == t);
                 if (map != null)
@@ -146,6 +147,20 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                 }
                 catch { }
 
+                var len2 = 0;
+                var scale = 0;
+                try
+                {
+                    len2 = (int)row.len2;
+                }
+                catch { }
+
+                try
+                {
+                    scale = (int)row.scale;
+                }
+                catch { }
+
                 if (t == "VARCHAR2" || t == "NVARCHAR2" || t == "CHAR" || t == "NCHAR" || t == "VARCHAR" ||
                     t == "NVARCHAR" || t == "TEXT" || t == "NTEXT")
                 {
@@ -158,22 +173,19 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                     model.DbLength = "4000";
 
                 }
+                else if (t == "TIMESTAMP")
+                {
+                    model.Length = scale;
+                    model.DbLength = scale.ToString();
+                    if (arrStr.Length > 1 && arrStr[1].Contains("TIME ZONE"))
+                    {
+                        model.CsStringType = "DateTimeOffset";
+                        model.CsType = typeof(DateTimeOffset);
+                        model.DbType = "TIMESTAMP WITH TIME ZONE";
+                    }
+                }
                 else if (t == "NUMBER")
                 {
-                    var len2 = 0;
-                    var scale = 0;
-                    try
-                    {
-                        len2 = (int)row.len2;
-                    }
-                    catch { }
-
-                    try
-                    {
-                        scale = (int)row.scale;
-                    }
-                    catch { }
-
                     model.Length = Convert.ToDouble($"{len2}.{scale}");
                     model.DbLength = len2.ToString();
                     if (scale != 0)
@@ -184,25 +196,42 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                             model.CsType = typeof(float);
                             model.CsStringType = "float";
                         }
-                        if (len2 == 15 && scale == 5)
+                        else if (len2 == 15 && scale == 5)
                         {
                             model.CsType = typeof(double);
                             model.CsStringType = "double";
                         }
+                        else
+                        {
+                            model.CsType = typeof(decimal);
+                            model.CsStringType = "decimal";
+                        }
                     }
                     else
                     {
-                        if (len2 == 1)
+                        if (len == 0 && len2 == 0 && scale == 0)
                         {
-                            model.CsType = typeof(int);
-                            model.CsStringType = "int";
+                            model.Length = 0;
+                            model.DbLength = "0";
+                            model.CsType = typeof(decimal);
+                            model.CsStringType = "decimal";
                         }
-                        else if (len2 <= 4)
+                        else if (len2 == 1)
+                        {
+                            model.CsType = typeof(bool);
+                            model.CsStringType = "bool";
+                        }
+                        else if (len2 <= 3)
+                        {
+                            model.CsType = typeof(byte);
+                            model.CsStringType = "byte";
+                        }
+                        else if (len2 <= 5)
                         {
                             model.CsType = typeof(short);
                             model.CsStringType = "short";
                         }
-                        else if (len2 <= 9)
+                        else if (len2 <= 10)
                         {
                             model.CsType = typeof(int);
                             model.CsStringType = "int";

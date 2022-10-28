@@ -90,7 +90,7 @@
 		<DbType Name="mediumtext" To="string" />
 		<DbType Name="text" To="string"/>
 		<DbType Name="longtext" To="string" />
-		<DbType Name="timestamp" To="DateTime" />
+		<DbType Name="timestamp" To="DateTimeOffset" />
 		<DbType Name="enum" To="string" />
 		<DbType Name="longblob" To="byte[]" />
 		<DbType Name="tinyblob" To="byte[]" />
