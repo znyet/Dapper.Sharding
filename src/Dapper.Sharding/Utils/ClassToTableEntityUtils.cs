@@ -5,7 +5,7 @@ namespace Dapper.Sharding
 {
     internal class ClassToTableEntityUtils
     {
-        public static TableEntity Get<T>(DataBaseType dbType)
+        public static TableEntity Get<T>(DataBaseType dbType, DataBaseVersion dbVersion)
         {
             var entity = new TableEntity();
             entity.ColumnList = new List<ColumnEntity>();
@@ -65,7 +65,7 @@ namespace Dapper.Sharding
                     {
                         colAttr.ColumnType = "jsons";
                     }
-                    column.DbType = CsharpTypeToDbType.Create(dbType, column.CsType, colAttr.Length, colAttr.ColumnType);
+                    column.DbType = CsharpTypeToDbType.Create(dbType, dbVersion, column.CsType, colAttr.Length, colAttr.ColumnType);
                     if (dbType == DataBaseType.Postgresql)
                     {
                         if (colAttr.ColumnType == "json")
@@ -86,11 +86,11 @@ namespace Dapper.Sharding
                 {
                     if (ok && pro.PropertyType != typeof(string))
                     {
-                        column.DbType = CsharpTypeToDbType.Create(dbType, column.CsType, 0, "jsons");
+                        column.DbType = CsharpTypeToDbType.Create(dbType, dbVersion, column.CsType, 0, "jsons");
                     }
                     else
                     {
-                        column.DbType = CsharpTypeToDbType.Create(dbType, column.CsType);
+                        column.DbType = CsharpTypeToDbType.Create(dbType, dbVersion, column.CsType);
                     }
 
                 }

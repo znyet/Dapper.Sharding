@@ -30,13 +30,13 @@ namespace Dapper.Sharding
         public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
         {
 
-            if (DataBase.DbType == DataBaseType.SqlServer2005 && t == typeof(DateTime))
+            if (DataBase.DbVersion == DataBaseVersion.SqlServer2005 && t == typeof(DateTime))
             {
                 DataBase.Execute($"alter table [{Name}] add  [{name}] datetime");
             }
             else
             {
-                var dbType = CsharpTypeToDbType.Create(DataBase.DbType, t, length, columnType);
+                var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType);
                 DataBase.Execute($"alter table [{Name}] add  [{name}] {dbType}");
             }
 
@@ -53,7 +53,7 @@ namespace Dapper.Sharding
 
         public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
         {
-            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, t, length, columnType);
+            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType);
             DataBase.Execute($"alter table [{Name}] alter column [{name}] {dbType}");
         }
 

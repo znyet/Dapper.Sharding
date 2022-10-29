@@ -220,7 +220,7 @@ namespace Dapper.Sharding
             }
             else
             {
-                if (DataBase.Client.DbType == DataBaseType.SqlServer2012)
+                if (DataBase.DbVersion == DataBaseVersion.SqlServer2012)
                 {
                     return $"SELECT {returnFields} FROM [{Name}] {where} {orderby.SetOrderBy(SqlField.PrimaryKey)} offset {skip} rows fetch next {take} rows only";
                 }

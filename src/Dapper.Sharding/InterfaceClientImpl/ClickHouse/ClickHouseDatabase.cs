@@ -89,7 +89,7 @@ namespace Dapper.Sharding
 
         public override string GetTableScript<T>(string name)
         {
-            var tableEntity = ClassToTableEntityUtils.Get<T>(Client.DbType);
+            var tableEntity = ClassToTableEntityUtils.Get<T>(DbType, DbVersion);
             var sb = new StringBuilder();
             if (string.IsNullOrEmpty(tableEntity.Cluster))
             {
@@ -105,7 +105,7 @@ namespace Dapper.Sharding
 #if CORE6
                 if (item.CsType.IsValueType && item.CsType != typeof(DateTime) && item.CsType != typeof(DateTimeOffset) && item.CsType != typeof(DateOnly) && item.CsType != typeof(TimeOnly) && item.CsType != typeof(DateTime?) && item.CsType != typeof(DateTimeOffset?) && item.CsType != typeof(DateOnly?) && item.CsType != typeof(TimeOnly?))
 #else
-                    if (item.CsType.IsValueType && item.CsType != typeof(DateTime) && item.CsType != typeof(DateTimeOffset) && item.CsType != typeof(DateTime?) && item.CsType != typeof(DateTimeOffset?))
+                if (item.CsType.IsValueType && item.CsType != typeof(DateTime) && item.CsType != typeof(DateTimeOffset) && item.CsType != typeof(DateTime?) && item.CsType != typeof(DateTimeOffset?))
 #endif
                 {
                     sb.Append(" DEFAULT 0");

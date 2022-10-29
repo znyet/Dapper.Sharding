@@ -22,20 +22,23 @@ namespace Dapper.Sharding
 
         private void SetSqlServer(IQuery query)
         {
-            if (db.DbType == DataBaseType.SqlServer2012)
+            if (db.DbType == DataBaseType.SqlServer)
             {
-                sqlOrderBy = query.sqlOrderBy;
-            }
-            else if (db.DbType == DataBaseType.SqlServer2005 || db.DbType == DataBaseType.SqlServer2008)
-            {
-                sqlOrderBy = query.sqlOrderBy;
-                if (query.skip > 1)
+                if (db.DbVersion == DataBaseVersion.SqlServer2012)
                 {
-                    throw new Exception("IQuery must set page=1 or skip=0");
+                    sqlOrderBy = query.sqlOrderBy;
                 }
-                if (query.take <= 0)
+                else
                 {
-                    query.sqlOrderBy = null;
+                    sqlOrderBy = query.sqlOrderBy;
+                    if (query.skip > 1)
+                    {
+                        throw new Exception("IQuery must set page=1 or skip=0");
+                    }
+                    if (query.take <= 0)
+                    {
+                        query.sqlOrderBy = null;
+                    }
                 }
             }
         }

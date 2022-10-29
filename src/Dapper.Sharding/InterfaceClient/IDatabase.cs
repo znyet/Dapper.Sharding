@@ -729,6 +729,14 @@ namespace Dapper.Sharding
             }
         }
 
+        public DataBaseVersion DbVersion
+        {
+            get
+            {
+                return Client.DbVersion;
+            }
+        }
+
         public void Using(Action<IDbConnection> action)
         {
             using (var conn = GetConn())
@@ -793,7 +801,7 @@ namespace Dapper.Sharding
                             else if (AutoCompareTableColumn)
                             {
                                 var dbColumns = GetTableColumnList(name);
-                                var tableEntity = ClassToTableEntityUtils.Get<T>(Client.DbType);
+                                var tableEntity = ClassToTableEntityUtils.Get<T>(DbType, DbVersion);
                                 var manager = GetTableManager(name);
 
                                 foreach (var item in tableEntity.ColumnList)

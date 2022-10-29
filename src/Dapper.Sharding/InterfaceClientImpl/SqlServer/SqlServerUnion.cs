@@ -20,7 +20,7 @@
                 }
                 else
                 {
-                    if (db.DbType == DataBaseType.SqlServer2012)
+                    if (db.DbVersion == DataBaseVersion.SqlServer2012)
                     {
                         return $"SELECT {returnFields} FROM ({sqlTable}) AS UTable{string.Concat(sqlWhere, sqlGroupBy, sqlHaving, sqlOrderBy)} offset {skip} rows fetch next {take} rows only";
                     }

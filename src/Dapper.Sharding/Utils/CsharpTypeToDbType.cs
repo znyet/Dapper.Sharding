@@ -6,7 +6,7 @@ namespace Dapper.Sharding
     internal class CsharpTypeToDbType
     {
 
-        public static string Create(DataBaseType dbType, Type type, double length = 0, string columnType = null)
+        public static string Create(DataBaseType dbType, DataBaseVersion dbVersion, Type type, double length = 0, string columnType = null)
         {
             if (!string.IsNullOrEmpty(columnType))
             {
@@ -32,7 +32,10 @@ namespace Dapper.Sharding
                     {
                         return "CLOB";
                     }
-                    return "nvarchar(max)"; //sqlserver
+                    if (dbType == DataBaseType.SqlServer)
+                    {
+                        return "nvarchar(max)";
+                    }
                 }
 
                 if (dbType != DataBaseType.Postgresql)
@@ -43,7 +46,7 @@ namespace Dapper.Sharding
                         {
                             return "json";
                         }
-                        else if (dbType == DataBaseType.SqlServer2012 || dbType == DataBaseType.SqlServer2008 || dbType == DataBaseType.SqlServer2005)
+                        else if (dbType == DataBaseType.SqlServer)
                         {
                             return "nvarchar(max)";
                         }
@@ -66,7 +69,7 @@ namespace Dapper.Sharding
                 {
                     if (columnType == "longtext")
                     {
-                        if (dbType == DataBaseType.SqlServer2012 || dbType == DataBaseType.SqlServer2008 || dbType == DataBaseType.SqlServer2005)
+                        if (dbType == DataBaseType.SqlServer)
                         {
                             return "nvarchar(max)";
                         }
@@ -90,9 +93,7 @@ namespace Dapper.Sharding
             {
                 case DataBaseType.MySql: return CreateMySqlType(type, length);
                 case DataBaseType.Sqlite: return CreateSqliteType(type);
-                case DataBaseType.SqlServer2005: return CreateSqlServerType(type, length);
-                case DataBaseType.SqlServer2008: return CreateSqlServerType(type, length);
-                case DataBaseType.SqlServer2012: return CreateSqlServerType(type, length);
+                case DataBaseType.SqlServer: return CreateSqlServerType(type, dbVersion, length);
                 case DataBaseType.Postgresql: return CreatePostgresqlType(type, length);
                 case DataBaseType.Oracle: return CreateOracleType(type, length);
                 case DataBaseType.ClickHouse: return CreateClickHouseType(type, length);
@@ -105,7 +106,7 @@ namespace Dapper.Sharding
             return $"unknown type {t}, please set ColumnAttribute ColumnType like [Column(columnType:\"jsonb\")] or other database type.";
         }
 
-        private static string CreateSqlServerType(Type type, double length = 0)
+        private static string CreateSqlServerType(Type type, DataBaseVersion dbVersion, double length = 0)
         {
             if (type == typeof(Guid) || type == typeof(Guid?))
             {
@@ -179,6 +180,10 @@ namespace Dapper.Sharding
 
             if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
+                if(dbVersion== DataBaseVersion.SqlServer2005)
+                {
+                    return "datetime";
+                }
                 if (length >= 0)
                 {
                     if (length > 7)
@@ -191,7 +196,7 @@ namespace Dapper.Sharding
                     return "date";
                 if (length == -2)
                     return "timestamp";
-                return $"datetime";
+                return "datetime";
             }
 
             if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))

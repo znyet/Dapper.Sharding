@@ -114,14 +114,14 @@ on (a.object_id = g.major_id AND g.minor_id = 0) where a.schema_id=1 AND a.type=
 
         public override string GetTableScript<T>(string name)
         {
-            var tableEntity = ClassToTableEntityUtils.Get<T>(Client.DbType);
+            var tableEntity = ClassToTableEntityUtils.Get<T>(DbType, DbVersion);
             var sb = new StringBuilder();
 
             sb.Append($"IF NOT EXISTS (SELECT * FROM sys.objects WHERE name='{name}' AND type='U' AND schema_id=1)");
             sb.Append($"CREATE TABLE [{name}](");
             foreach (var item in tableEntity.ColumnList)
             {
-                if (DbType == DataBaseType.SqlServer2005 && item.CsType == typeof(DateTime))
+                if (DbVersion == DataBaseVersion.SqlServer2005 && item.CsType == typeof(DateTime))
                 {
                     sb.Append($"[{item.Name}] datetime");
                 }

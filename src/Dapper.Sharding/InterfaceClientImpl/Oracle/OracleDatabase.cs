@@ -128,7 +128,7 @@ WHERE C.TABLE_NAME = '{name.ToUpper()}' ORDER BY C.COLUMN_ID";
 
         public override string GetTableScript<T>(string name)
         {
-            var tableEntity = ClassToTableEntityUtils.Get<T>(Client.DbType);
+            var tableEntity = ClassToTableEntityUtils.Get<T>(DbType, DbVersion);
             if (tableEntity.IsIdentity)
                 throw new Exception($"oracle is not supported identity key,table name is {name}");
             var sb = new StringBuilder();
@@ -168,7 +168,7 @@ WHERE C.TABLE_NAME = '{name.ToUpper()}' ORDER BY C.COLUMN_ID";
         public override void CreateTable<T>(string name)
         {
             var script = GetTableScript<T>(name);
-            var tableEntity = ClassToTableEntityUtils.Get<T>(Client.DbType);
+            var tableEntity = ClassToTableEntityUtils.Get<T>(DbType, DbVersion);
             using (var conn = GetConn())
             {
                 using (var tran = conn.BeginTransaction())

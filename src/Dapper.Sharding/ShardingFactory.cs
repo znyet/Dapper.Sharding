@@ -47,18 +47,20 @@ namespace Dapper.Sharding
             IdHelper.IdGenInstance = new DefaultIdGenerator(opt);
         }
 
-        public static IClient CreateClient(DataBaseType dbType, DataBaseConfig config)
+        public static IClient CreateClient(DataBaseType dbType, DataBaseConfig config, DataBaseVersion version = DataBaseVersion.Default)
         {
             switch (dbType)
             {
                 case DataBaseType.MySql:
                     return new MySqlClient(config);
-                case DataBaseType.SqlServer2005:
-                    return new SqlServerClient(config, DataBaseType.SqlServer2005);
-                case DataBaseType.SqlServer2008:
-                    return new SqlServerClient(config, DataBaseType.SqlServer2008);
-                case DataBaseType.SqlServer2012:
-                    return new SqlServerClient(config, DataBaseType.SqlServer2012);
+                case DataBaseType.SqlServer:
+                    {
+                        if (version == DataBaseVersion.Default)
+                        {
+                            version = DataBaseVersion.SqlServer2008;
+                        }
+                        return new SqlServerClient(config, version);
+                    }
                 case DataBaseType.Sqlite:
                     return new SQLiteClient(config);
                 case DataBaseType.Postgresql:

@@ -21,7 +21,7 @@ namespace Dapper.Sharding
                 {
                     if (!MySqlDict.ContainsKey(typeHandle))
                     {
-                        MySqlDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.MySql), "`", "`", "@"));
+                        MySqlDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.MySql, DataBaseVersion.Default), "`", "`", "@"));
                     }
                 }
                 val = MySqlDict[typeHandle];
@@ -47,7 +47,7 @@ namespace Dapper.Sharding
                 {
                     if (!SqlServerDict.ContainsKey(typeHandle))
                     {
-                        SqlServerDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.SqlServer2008), "[", "]", "@"));
+                        SqlServerDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.SqlServer, DataBaseVersion.SqlServer2008), "[", "]", "@"));
                     }
                 }
                 val = SqlServerDict[typeHandle];
@@ -73,7 +73,7 @@ namespace Dapper.Sharding
                 {
                     if (!SqliteDict.ContainsKey(typeHandle))
                     {
-                        SqliteDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.Sqlite), "[", "]", "@"));
+                        SqliteDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.Sqlite, DataBaseVersion.Default), "[", "]", "@"));
                     }
                 }
                 val = SqliteDict[typeHandle];
@@ -100,7 +100,7 @@ namespace Dapper.Sharding
                     if (!PostgreDict.ContainsKey(typeHandle))
                     {
                         //PostgreDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(), "\"", "\"", "@"));
-                        PostgreDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.Postgresql), "", "", "@"));
+                        PostgreDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.Postgresql, DataBaseVersion.Default), "", "", "@"));
                     }
                 }
                 val = PostgreDict[typeHandle];
@@ -127,7 +127,7 @@ namespace Dapper.Sharding
                     if (!OracleDict.ContainsKey(typeHandle))
                     {
                         //OracleDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(), "\"", "\"", ":"));
-                        OracleDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.Oracle), "", "", ":"));
+                        OracleDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.Oracle, DataBaseVersion.Default), "", "", ":"));
                     }
                 }
                 val = OracleDict[typeHandle];
@@ -153,7 +153,7 @@ namespace Dapper.Sharding
                 {
                     if (!ClickHouseDict.ContainsKey(typeHandle))
                     {
-                        ClickHouseDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.ClickHouse), "", "", "@"));
+                        ClickHouseDict.TryAdd(typeHandle, new SqlFieldEntity(ClassToTableEntityUtils.Get<T>(DataBaseType.ClickHouse, DataBaseVersion.Default), "", "", "@"));
                     }
                 }
                 val = ClickHouseDict[typeHandle];

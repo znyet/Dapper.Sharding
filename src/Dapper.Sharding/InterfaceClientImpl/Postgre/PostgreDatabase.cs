@@ -128,7 +128,7 @@ order by a.relname asc";
         public override string GetTableScript<T>(string name)
         {
             string lowName = name.ToLower();
-            var tableEntity = ClassToTableEntityUtils.Get<T>(Client.DbType);
+            var tableEntity = ClassToTableEntityUtils.Get<T>(DbType, DbVersion);
             var sb = new StringBuilder();
             sb.Append($"CREATE TABLE IF NOT EXISTS {lowName} (");
             foreach (var item in tableEntity.ColumnList)

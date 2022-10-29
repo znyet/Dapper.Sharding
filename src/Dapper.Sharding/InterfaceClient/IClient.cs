@@ -9,10 +9,11 @@ namespace Dapper.Sharding
     public abstract class IClient
     {
 
-        public IClient(DataBaseType dbType, DataBaseConfig config)
+        public IClient(DataBaseType dbType, DataBaseConfig config, DataBaseVersion version = DataBaseVersion.Default)
         {
             DbType = dbType;
             Config = config;
+            DbVersion = version;
         }
 
         #region dapper method
@@ -278,6 +279,8 @@ namespace Dapper.Sharding
         #region common method
 
         public DataBaseType DbType { get; }
+
+        public DataBaseVersion DbVersion { get; }
 
         public DataBaseConfig Config { get; }
 

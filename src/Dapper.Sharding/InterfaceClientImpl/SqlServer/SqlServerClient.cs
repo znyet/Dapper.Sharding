@@ -16,7 +16,7 @@ namespace Dapper.Sharding
     internal class SqlServerClient : IClient
     {
 
-        public SqlServerClient(DataBaseConfig config, DataBaseType dbType) : base(dbType, config)
+        public SqlServerClient(DataBaseConfig config, DataBaseVersion version) : base(DataBaseType.SqlServer, config, version)
         {
             if (!string.IsNullOrEmpty(config.Database_Path))
             {
@@ -31,14 +31,14 @@ namespace Dapper.Sharding
         public override string ConnectionString { get; set; }
 
 
-#region protected method
+        #region protected method
 
         protected override IDatabase CreateIDatabase(string name)
         {
             return new SqlServerDatabase(name, this);
         }
 
-#endregion
+        #endregion
 
         public override string GetDatabaseScript(string name, bool useGis = false, string ext = null)
         {
