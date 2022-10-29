@@ -4,7 +4,8 @@
 var config = new DataBaseConfig { Server = "127.0.0.1", UserId = "root", Password = "123", Port = 3306 };
 
 //client must be singleton mode(必须是单例模式)
-static IClient client = ShardingFactory.CreateClient(DataBaseType.MySql, config); 
+static IClient client = ShardingFactory.CreateClient(DataBaseType.MySql, config);
+//static IClient client = ShardingFactory.CreateClient(DataBaseType.SqlServer, config, DataBaseVersion.SqlServer2012);
 //client.AutoCreateDatabase = true; //自动创建数据库
 //client.AutoCreateTable = true; //自动创建表
 //client.AutoCompareTableColumn = false; //是否自动对比列
