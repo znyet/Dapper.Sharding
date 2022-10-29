@@ -180,15 +180,11 @@ namespace Dapper.Sharding
 
             if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
-                if (length == 0)
-                {
-                    return "datetime";
-                }
                 if (dbVersion == DataBaseVersion.SqlServer2005)
                 {
                     return "datetime";
                 }
-                if (length > 0)
+                if (length >= 0)
                 {
                     if (length > 7)
                     {
