@@ -5,6 +5,11 @@
         public OracleUnion(IDatabase db) : base(db)
         {
         }
+
+        public OracleUnion(IDatabase db, string sql) : base(db, sql)
+        {
+        }
+
         public override string GetSql()
         {
             if (take == 0)

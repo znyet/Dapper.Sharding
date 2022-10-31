@@ -101,6 +101,11 @@ namespace Test
             Factory.peopleTable.Insert(new List<People> { p });
             Console.WriteLine(p.Id);
 
+            var query = Factory.Db.CreateQuery(Factory.peopleTable.AsQuery().GetSql(), "a").OrderBy("id").Page(2, 10).Union(Factory.peopleTable.AsQuery());
+            Console.WriteLine(query.GetSql());
+            query.QueryPageAndCount();
+            //Factory.Db.CreateQuery(Factory.peopleTable.AsQuery().GetSql(), "a").QueryPageAndCount();
+
             var teacher = new Teacher
             {
                 Id = ShardingFactory.NextSnowId(),

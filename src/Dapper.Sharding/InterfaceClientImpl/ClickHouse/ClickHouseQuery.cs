@@ -1,4 +1,6 @@
-﻿namespace Dapper.Sharding
+﻿using Z.BulkOperations.Internal.InformationSchema;
+
+namespace Dapper.Sharding
 {
     internal class ClickHouseQuery : IQuery
     {
@@ -43,6 +45,24 @@
         public override IQuery RightJoin<T>(ITable<T> table, string asName, string on)
         {
             sqlTable += $" RIGHT JOIN {table.Name} AS {asName} ON {on}";
+            return this;
+        }
+
+        public override IQuery InnerJoin<T>(string sql, string asName, string on)
+        {
+            sqlTable += $" INNER JOIN ({sql}) AS {asName} ON {on}";
+            return this;
+        }
+
+        public override IQuery LeftJoin<T>(string sql, string asName, string on)
+        {
+            sqlTable += $" LEFT JOIN ({sql}) AS {asName} ON {on}";
+            return this;
+        }
+
+        public override IQuery RightJoin<T>(string sql, string asName, string on)
+        {
+            sqlTable += $" RIGHT JOIN ({sql}) AS {asName} ON {on}";
             return this;
         }
 

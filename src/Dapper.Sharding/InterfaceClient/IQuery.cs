@@ -29,6 +29,12 @@ namespace Dapper.Sharding
 
         public abstract IQuery RightJoin<T>(ITable<T> table, string asName, string on) where T : class;
 
+        public abstract IQuery InnerJoin<T>(string sql, string asName, string on) where T : class;
+
+        public abstract IQuery LeftJoin<T>(string sql, string asName, string on) where T : class;
+
+        public abstract IQuery RightJoin<T>(string sql, string asName, string on) where T : class;
+
         public abstract string GetSql();
 
         public abstract string GetSqlCount();
@@ -36,6 +42,14 @@ namespace Dapper.Sharding
         #endregion
 
         #region Method
+
+        internal IQuery Add(string sql, string asName)
+        {
+            sqlTable = $"({sql}) {asName}";
+            _returnFields = returnFields;
+            returnFields = "*";
+            return this;
+        }
 
         public void Clear()
         {

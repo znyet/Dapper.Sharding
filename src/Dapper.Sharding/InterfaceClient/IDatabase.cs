@@ -1099,6 +1099,41 @@ namespace Dapper.Sharding
 
         #endregion
 
+        #region IQuery
+
+        public IQuery CreateQuery(string sql, string asName)
+        {
+            IQuery query;
+            if (DbType == DataBaseType.MySql)
+            {
+                query = new MySqlQuery(this);
+            }
+            else if (DbType == DataBaseType.Postgresql)
+            {
+                query = new PostgreQuery(this);
+            }
+            else if (DbType == DataBaseType.Sqlite)
+            {
+                query = new SQLiteQuery(this);
+            }
+            else if (DbType == DataBaseType.ClickHouse)
+            {
+                query = new ClickHouseQuery(this);
+            }
+            else if (DbType == DataBaseType.Oracle)
+            {
+                query = new OracleQuery(this);
+            }
+            else
+            {
+                query = new SqlServerQuery(this);
+            }
+            query.Add(sql, asName);
+            return query;
+        }
+
+        #endregion
+
         #region IUnion
 
         public IUnion CreateUnion()
@@ -1126,6 +1161,34 @@ namespace Dapper.Sharding
             else
             {
                 return new SqlServerUnion(this);
+            }
+        }
+
+        public IUnion CreateUnion(string sql)
+        {
+            if (DbType == DataBaseType.MySql)
+            {
+                return new MySqlUnion(this, sql);
+            }
+            else if (DbType == DataBaseType.Postgresql)
+            {
+                return new PostgreUnion(this, sql);
+            }
+            else if (DbType == DataBaseType.Sqlite)
+            {
+                return new SQLiteUnion(this, sql);
+            }
+            else if (DbType == DataBaseType.ClickHouse)
+            {
+                return new ClickHouseUnion(this, sql);
+            }
+            else if (DbType == DataBaseType.Oracle)
+            {
+                return new OracleUnion(this, sql);
+            }
+            else
+            {
+                return new SqlServerUnion(this, sql);
             }
         }
 

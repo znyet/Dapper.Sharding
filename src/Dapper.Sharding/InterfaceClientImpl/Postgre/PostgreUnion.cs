@@ -6,6 +6,10 @@
         {
         }
 
+        public PostgreUnion(IDatabase db, string sql) : base(db, sql)
+        {
+        }
+
         public override string GetSql()
         {
             if (take == 0)

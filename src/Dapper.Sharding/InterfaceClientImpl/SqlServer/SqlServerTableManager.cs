@@ -161,7 +161,7 @@ order by a.id,a.colorder";
                     model.Length = Convert.ToDouble($"{row.ColumnLength}.{row.DecimalDigit}");
                     model.DbLength = $"{row.ColumnLength},{row.DecimalDigit}";
                 }
-                else if (model.DbType == "datetime2")
+                else if (model.DbType == "datetime" || model.DbType == "datetime2")
                 {
                     model.Length = row.DecimalDigit;
                     model.DbType = model.Length.ToString();

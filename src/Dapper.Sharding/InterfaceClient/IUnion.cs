@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -18,6 +19,21 @@ namespace Dapper.Sharding
         {
             returnFields = "*";
             this.db = db;
+        }
+
+        public IUnion(IDatabase db, string sql)
+        {
+            returnFields = "*";
+            this.db = db;
+
+            if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
+            {
+                sqlTable = $"SELECT * FROM ({sql})";
+            }
+            else
+            {
+                sqlTable = $"({sql})";
+            }
         }
 
         private void SetSqlServer(IQuery query)
@@ -50,11 +66,11 @@ namespace Dapper.Sharding
             {
                 if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
                 {
-                    sqlTable += $"SELECT * FROM ({query.GetSql()})";
+                    sqlTable = $"SELECT * FROM ({query.GetSql()})";
                 }
                 else
                 {
-                    sqlTable += $"({query.GetSql()})";
+                    sqlTable = $"({query.GetSql()})";
                 }
             }
             else
@@ -78,11 +94,11 @@ namespace Dapper.Sharding
             {
                 if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
                 {
-                    sqlTable += $"SELECT * FROM ({query.GetSql()})";
+                    sqlTable = $"SELECT * FROM ({query.GetSql()})";
                 }
                 else
                 {
-                    sqlTable += $"({query.GetSql()})";
+                    sqlTable = $"({query.GetSql()})";
                 }
             }
             else
@@ -94,6 +110,60 @@ namespace Dapper.Sharding
                 else
                 {
                     sqlTable += $" UNION ALL ({query.GetSql()})";
+                }
+            }
+            return this;
+        }
+
+        public IUnion Union(string sql)
+        {
+            if (string.IsNullOrEmpty(sqlTable))
+            {
+                if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
+                {
+                    sqlTable = $"SELECT * FROM ({sql})";
+                }
+                else
+                {
+                    sqlTable = $"({sql})";
+                }
+            }
+            else
+            {
+                if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
+                {
+                    sqlTable += $" UNION SELECT * FROM ({sql})";
+                }
+                else
+                {
+                    sqlTable += $" UNION ({sql})";
+                }
+            }
+            return this;
+        }
+
+        public IUnion UnionAll(string sql)
+        {
+            if (string.IsNullOrEmpty(sqlTable))
+            {
+                if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
+                {
+                    sqlTable = $"SELECT * FROM ({sql})";
+                }
+                else
+                {
+                    sqlTable = $"({sql})";
+                }
+            }
+            else
+            {
+                if (db.DbType == DataBaseType.Oracle || db.DbType == DataBaseType.Sqlite)
+                {
+                    sqlTable += $" UNION ALL SELECT * FROM ({sql})";
+                }
+                else
+                {
+                    sqlTable += $" UNION ALL ({sql})";
                 }
             }
             return this;
