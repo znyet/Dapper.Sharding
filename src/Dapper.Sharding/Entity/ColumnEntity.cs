@@ -10,6 +10,8 @@ namespace Dapper.Sharding
 
         public double Length { get; set; }
 
+        public int Scale { get; set; }
+
         public string DbLength { get; set; }
 
         public string Comment { get; set; }

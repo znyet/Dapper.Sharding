@@ -104,7 +104,15 @@ namespace Dapper.Sharding
         {
             get
             {
-                return DataBase.Client.DbType;
+                return DataBase.DbType;
+            }
+        }
+
+        public DataBaseVersion DbVersion
+        {
+            get
+            {
+                return DataBase.DbVersion;
             }
         }
 

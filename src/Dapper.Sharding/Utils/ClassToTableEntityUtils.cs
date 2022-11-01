@@ -61,11 +61,12 @@ namespace Dapper.Sharding
                 {
                     column.Comment = colAttr.Comment;
                     column.Length = colAttr.Length;
+                    column.Scale = colAttr.Scale;
                     if (ok && string.IsNullOrEmpty(colAttr.ColumnType) && pro.PropertyType != typeof(string))
                     {
                         colAttr.ColumnType = "jsons";
                     }
-                    column.DbType = CsharpTypeToDbType.Create(dbType, dbVersion, column.CsType, colAttr.Length, colAttr.ColumnType);
+                    column.DbType = CsharpTypeToDbType.Create(dbType, dbVersion, column.CsType, colAttr.Length, colAttr.ColumnType, colAttr.Scale);
                     if (dbType == DataBaseType.Postgresql)
                     {
                         if (colAttr.ColumnType == "json")

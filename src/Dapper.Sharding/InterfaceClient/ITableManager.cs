@@ -25,11 +25,11 @@ namespace Dapper.Sharding
 
         public abstract void DropIndex(string name);
 
-        public abstract void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null);
+        public abstract void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0);
 
         public abstract void DropColumn(string name);
 
-        public abstract void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null);
+        public abstract void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0);
 
         public abstract List<IndexEntity> GetIndexEntityList();
 

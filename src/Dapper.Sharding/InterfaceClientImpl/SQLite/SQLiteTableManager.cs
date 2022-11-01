@@ -28,7 +28,7 @@ namespace Dapper.Sharding
             DataBase.Execute($"DROP INDEX {name}");
         }
 
-        public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
+        public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType);
             if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset))
@@ -43,7 +43,7 @@ namespace Dapper.Sharding
             //throw new NotImplementedException();
         }
 
-        public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
+        public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             throw new NotImplementedException();
         }

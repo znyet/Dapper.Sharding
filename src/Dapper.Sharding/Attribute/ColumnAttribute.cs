@@ -20,11 +20,17 @@ namespace Dapper.Sharding
         /// </summary>
         public string ColumnType;
 
-        public ColumnAttribute(double length = 0, string comment = null, string columnType = null)
+        /// <summary>
+        /// decimal小数点精确位数
+        /// </summary>
+        public int Scale;
+
+        public ColumnAttribute(double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             Length = length;
             Comment = comment;
             ColumnType = columnType;
+            Scale = scale;
         }
 
 

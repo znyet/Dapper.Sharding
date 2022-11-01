@@ -29,12 +29,12 @@ namespace Dapper.Sharding
 
         public override string GetDatabaseScript(string name, bool useGis = false, string ext = null)
         {
-            return $"CREATE DATABASE {name}";
+            return $"CREATE DATABASE {name.ToLower()}";
         }
 
         public override void CreateDatabase(string name, bool useGis = false, string ext = null)
         {
-            Execute($"CREATE DATABASE {name}");
+            Execute($"CREATE DATABASE {name.ToLower()}");
 
             if (useGis)
             {
@@ -88,13 +88,13 @@ namespace Dapper.Sharding
 
         public override void DropDatabase(string name)
         {
-            Execute($"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE datname='{name}' AND pid<>pg_backend_pid();DROP DATABASE IF EXISTS {name}");
+            Execute($"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE datname='{name.ToLower()}' AND pid<>pg_backend_pid();DROP DATABASE IF EXISTS {name.ToLower()}");
             DataBaseCache.TryRemove(name, out _);
         }
 
         public override bool ExistsDatabase(string name)
         {
-            return ExecuteScalar<int>($"SELECT COUNT(1) FROM pg_database WHERE datname = '{name}'") > 0;
+            return ExecuteScalar<int>($"SELECT COUNT(1) FROM pg_database WHERE datname='{name.ToLower()}'") > 0;
         }
 
         public override IDbConnection GetConn()

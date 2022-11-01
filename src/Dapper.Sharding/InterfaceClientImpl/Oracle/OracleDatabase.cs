@@ -31,7 +31,7 @@ namespace Dapper.Sharding
         {
             if (ExistsTable(name))
             {
-                Execute("DROP TABLE " + name);
+                Execute("DROP TABLE " + name.ToUpper());
             }
             TableCache.TryRemove(name, out _);
         }

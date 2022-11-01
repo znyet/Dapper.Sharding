@@ -30,9 +30,9 @@ namespace Dapper.Sharding
             DataBase.Execute($"drop index \"{name}\"");
         }
 
-        public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
+        public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
-            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType);
+            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
             if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset))
             {
                 dbType += " DEFAULT 0";
@@ -46,7 +46,7 @@ namespace Dapper.Sharding
             DataBase.Execute($"ALTER TABLE {Name.ToUpper()} DROP COLUMN {name.ToUpper()}");
         }
 
-        public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
+        public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             throw new NotImplementedException();
         }
@@ -160,6 +160,7 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                     scale = (int)row.scale;
                 }
                 catch { }
+                model.Scale = scale;
 
                 if (t == "VARCHAR2" || t == "NVARCHAR2" || t == "CHAR" || t == "NCHAR" || t == "VARCHAR" ||
                     t == "NVARCHAR" || t == "TEXT" || t == "NTEXT")
@@ -186,8 +187,17 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                 }
                 else if (t == "NUMBER")
                 {
-                    model.Length = Convert.ToDouble($"{len2}.{scale}");
-                    model.DbLength = len2.ToString();
+                    if (model.Scale > 0 && model.Scale.ToString().EndsWith("0"))
+                    {
+                        model.Length = Convert.ToDouble(row.ColumnLength);
+                    }
+                    else
+                    {
+                        model.Length = Convert.ToDouble($"{len2}.{scale}");
+                        model.Scale = 0;
+                    }
+                    model.DbLength = $"{len2},{scale}";
+
                     if (scale != 0)
                     {
                         model.DbLength = $"{len2},{scale}";

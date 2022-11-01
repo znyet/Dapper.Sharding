@@ -6,7 +6,7 @@ namespace Dapper.Sharding
     internal class CsharpTypeToDbType
     {
 
-        public static string Create(DataBaseType dbType, DataBaseVersion dbVersion, Type type, double length = 0, string columnType = null)
+        public static string Create(DataBaseType dbType, DataBaseVersion dbVersion, Type type, double length = 0, string columnType = null, int scale = 0)
         {
             if (!string.IsNullOrEmpty(columnType))
             {
@@ -91,12 +91,12 @@ namespace Dapper.Sharding
             }
             switch (dbType)
             {
-                case DataBaseType.MySql: return CreateMySqlType(type, length);
+                case DataBaseType.MySql: return CreateMySqlType(type, length, scale);
                 case DataBaseType.Sqlite: return CreateSqliteType(type);
-                case DataBaseType.SqlServer: return CreateSqlServerType(type, dbVersion, length);
-                case DataBaseType.Postgresql: return CreatePostgresqlType(type, length);
+                case DataBaseType.SqlServer: return CreateSqlServerType(type, dbVersion, length, scale);
+                case DataBaseType.Postgresql: return CreatePostgresqlType(type, length, scale);
                 case DataBaseType.Oracle: return CreateOracleType(type, length);
-                case DataBaseType.ClickHouse: return CreateClickHouseType(type, length);
+                case DataBaseType.ClickHouse: return CreateClickHouseType(type, length, scale);
             }
             throw new Exception("CsharpTypeToDbType no found");
         }
@@ -106,7 +106,7 @@ namespace Dapper.Sharding
             return $"unknown type {t}, please set ColumnAttribute ColumnType like [Column(columnType:\"jsonb\")] or other database type.";
         }
 
-        private static string CreateSqlServerType(Type type, DataBaseVersion dbVersion, double length = 0)
+        private static string CreateSqlServerType(Type type, DataBaseVersion dbVersion, double length = 0, int scale = 0)
         {
             if (type == typeof(Guid) || type == typeof(Guid?))
             {
@@ -167,6 +167,10 @@ namespace Dapper.Sharding
 
             if (type == typeof(decimal) || type == typeof(decimal?))
             {
+                if (scale > 0)
+                {
+                    return $"decimal({Math.Floor(length)},{scale})";
+                }
                 var len = length.ToString();
                 if (len.Contains("."))
                 {
@@ -270,7 +274,7 @@ namespace Dapper.Sharding
             //return $"binary({length})";
         }
 
-        private static string CreateMySqlType(Type type, double length = 0)
+        private static string CreateMySqlType(Type type, double length = 0, int scale = 0)
         {
             if (type == typeof(Guid) || type == typeof(Guid?))
             {
@@ -333,6 +337,10 @@ namespace Dapper.Sharding
 
             if (type == typeof(decimal) || type == typeof(decimal?))
             {
+                if (scale > 0)
+                {
+                    return $"decimal({Math.Floor(length)},{scale})";
+                }
                 var len = length.ToString();
                 if (len.Contains("."))
                 {
@@ -541,7 +549,7 @@ namespace Dapper.Sharding
             //return "BLOB";
         }
 
-        private static string CreatePostgresqlType(Type type, double length = 0)
+        private static string CreatePostgresqlType(Type type, double length = 0, int scale = 0)
         {
             if (type == typeof(Guid) || type == typeof(Guid?))
             {
@@ -619,6 +627,10 @@ namespace Dapper.Sharding
 
             if (type == typeof(decimal) || type == typeof(decimal?))
             {
+                if (scale > 0)
+                {
+                    return $"numeric({Math.Floor(length)},{scale})";
+                }
                 var len = length.ToString();
                 if (len.Contains("."))
                 {
@@ -726,7 +738,7 @@ namespace Dapper.Sharding
 
         }
 
-        private static string CreateOracleType(Type type, double length = 0)
+        private static string CreateOracleType(Type type, double length = 0, int scale = 0)
         {
             if (type == typeof(Guid) || type == typeof(Guid?))
             {
@@ -785,6 +797,10 @@ namespace Dapper.Sharding
 
             if (type == typeof(decimal) || type == typeof(decimal?))
             {
+                if (scale > 0)
+                {
+                    return $"NUMBER({Math.Floor(length)},{scale})";
+                }
                 if (length == 0)
                 {
                     return "NUMBER";
@@ -885,7 +901,7 @@ namespace Dapper.Sharding
             //return "BLOB";
         }
 
-        private static string CreateClickHouseType(Type type, double length = 0)
+        private static string CreateClickHouseType(Type type, double length = 0, int scale = 0)
         {
             if (type == typeof(Guid) || type == typeof(Guid?))
             {
@@ -990,6 +1006,11 @@ namespace Dapper.Sharding
                 else
                 {
                     p = Convert.ToInt32(len);
+                }
+
+                if (scale > 0)
+                {
+                    s = scale;
                 }
 
                 if (p >= 1 && p <= 9)

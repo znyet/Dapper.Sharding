@@ -27,7 +27,7 @@ namespace Dapper.Sharding
             DataBase.Execute($"DROP INDEX {name} ON [{Name}]");
         }
 
-        public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
+        public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
 
             if (DataBase.DbVersion == DataBaseVersion.SqlServer2005 && t == typeof(DateTime))
@@ -36,7 +36,7 @@ namespace Dapper.Sharding
             }
             else
             {
-                var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType);
+                var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
                 DataBase.Execute($"alter table [{Name}] add  [{name}] {dbType}");
             }
 
@@ -51,9 +51,9 @@ namespace Dapper.Sharding
             DataBase.Execute($"alter table [{Name}] drop column [{name}]");
         }
 
-        public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
+        public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
-            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType);
+            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
             DataBase.Execute($"alter table [{Name}] alter column [{name}] {dbType}");
         }
 
@@ -158,18 +158,27 @@ order by a.id,a.colorder";
 
                 if (model.DbType == "decimal")
                 {
-                    model.Length = Convert.ToDouble($"{row.ColumnLength}.{row.DecimalDigit}");
+                    model.Scale = Convert.ToInt32(row.DecimalDigit);
+                    if (model.Scale > 0 && model.Scale.ToString().EndsWith("0"))
+                    {
+                        model.Length = Convert.ToDouble(row.ColumnLength);
+                    }
+                    else
+                    {
+                        model.Length = Convert.ToDouble($"{row.ColumnLength}.{row.DecimalDigit}");
+                        model.Scale = 0;
+                    }
                     model.DbLength = $"{row.ColumnLength},{row.DecimalDigit}";
                 }
                 else if (model.DbType == "datetime" || model.DbType == "datetime2")
                 {
                     model.Length = row.DecimalDigit;
-                    model.DbType = model.Length.ToString();
+                    model.DbLength = model.Length.ToString();
                 }
                 else if (model.DbType == "datetimeoffset")
                 {
                     model.Length = row.DecimalDigit;
-                    model.DbType = model.Length.ToString();
+                    model.DbLength = model.Length.ToString();
                 }
                 else
                 {

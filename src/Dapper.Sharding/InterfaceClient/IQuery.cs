@@ -29,11 +29,11 @@ namespace Dapper.Sharding
 
         public abstract IQuery RightJoin<T>(ITable<T> table, string asName, string on) where T : class;
 
-        public abstract IQuery InnerJoin<T>(string sql, string asName, string on) where T : class;
+        public abstract IQuery InnerJoin(string sql, string asName, string on);
 
-        public abstract IQuery LeftJoin<T>(string sql, string asName, string on) where T : class;
+        public abstract IQuery LeftJoin(string sql, string asName, string on);
 
-        public abstract IQuery RightJoin<T>(string sql, string asName, string on) where T : class;
+        public abstract IQuery RightJoin(string sql, string asName, string on);
 
         public abstract string GetSql();
 

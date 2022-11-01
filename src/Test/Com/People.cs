@@ -51,5 +51,14 @@ namespace Test
 
         public DateTimeOffset TimeOff { get; set; }
 
+        [Column(18, scale: 10)]
+        public decimal Moneysss { get; set; }
+
+        [Column(18, "", scale: 10)]
+        public decimal Moneysss1 { get; set; }
+
+        [Column(10.6)]
+        public decimal Moneysss2 { get; set; }
+
     }
 }

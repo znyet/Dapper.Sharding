@@ -48,19 +48,19 @@ namespace Dapper.Sharding
             return this;
         }
 
-        public override IQuery InnerJoin<T>(string sql, string asName, string on)
+        public override IQuery InnerJoin(string sql, string asName, string on)
         {
             sqlTable += $" INNER JOIN ({sql}) {asName} ON {on}";
             return this;
         }
 
-        public override IQuery LeftJoin<T>(string sql, string asName, string on)
+        public override IQuery LeftJoin(string sql, string asName, string on)
         {
             sqlTable += $" LEFT JOIN ({sql}) {asName} ON {on}";
             return this;
         }
 
-        public override IQuery RightJoin<T>(string sql, string asName, string on)
+        public override IQuery RightJoin(string sql, string asName, string on)
         {
             sqlTable += $" RIGHT JOIN ({sql}) {asName} ON {on}";
             return this;

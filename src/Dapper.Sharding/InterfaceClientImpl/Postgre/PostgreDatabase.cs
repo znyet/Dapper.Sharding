@@ -29,13 +29,13 @@ namespace Dapper.Sharding
 
         public override void DropTable(string name)
         {
-            Execute($"DROP TABLE IF EXISTS {name}");
+            Execute($"DROP TABLE IF EXISTS {name.ToLower()}");
             TableCache.TryRemove(name, out _);
         }
 
         public override bool ExistsTable(string name)
         {
-            return ExecuteScalar<int>($"select count(1) from pg_tables where schemaname='public' and tablename='{name}'") > 0;
+            return ExecuteScalar<int>($"select count(1) from pg_tables where schemaname='public' and tablename='{name.ToLower()}'") > 0;
         }
 
         public override IDbConnection GetConn()
@@ -80,7 +80,7 @@ namespace Dapper.Sharding
 
         public override IEnumerable<string> GetTableColumnList(string name)
         {
-            return Query<string>($"select column_name from information_schema.columns where table_schema='public' and table_name='{name}'");
+            return Query<string>($"select column_name from information_schema.columns where table_schema='public' and table_name='{name.ToLower()}'");
         }
 
         public override TableEntity GetTableEntityFromDatabase(string name, bool firstCharToUpper = false)
@@ -89,7 +89,7 @@ namespace Dapper.Sharding
             entity.PrimaryKey = "";
             string sql = $@"select a.relname as name , b.description as value from pg_class a 
 left join (select * from pg_description where objsubid=0) b on a.oid = b.objoid
-where a.relname='{name}' and exists(SELECT 1 from PG_STAT_ALL_TABLES WHERE schemaname='public' and RELNAME='{name}' and relid=a.oid) 
+where a.relname='{name.ToLower()}' and exists(SELECT 1 from PG_STAT_ALL_TABLES WHERE schemaname='public' and RELNAME='{name.ToLower()}' and relid=a.oid) 
 order by a.relname asc";
 
             var row = QueryFirstOrDefault(sql);

@@ -32,9 +32,9 @@ namespace Dapper.Sharding
             DataBase.Execute($"DROP INDEX {name}");
         }
 
-        public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
+        public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
-            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType);
+            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
             if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset))
             {
                 if (t != typeof(bool))
@@ -62,9 +62,9 @@ namespace Dapper.Sharding
             DataBase.Execute($"ALTER TABLE {Name} DROP COLUMN {name}");
         }
 
-        public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null)
+        public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
-            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType);
+            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
             DataBase.Execute($"ALTER TABLE {Name} ALTER COLUMN {name} TYPE {dbType}");
         }
 
@@ -234,7 +234,21 @@ where table_schema='public' and table_name=current_setting('myapp.name') order b
                 {
                     var length = array[1].Split(')')[0];
                     model.DbLength = length;
-                    model.Length = Convert.ToDouble(length.Replace(',', '.'));
+                    if (length.Contains(","))
+                    {
+                        var scaleArr = length.Split(',');
+                        if (scaleArr.Length > 1)
+                        {
+                            model.Length = Convert.ToInt32(scaleArr[0]);
+                            model.Scale = Convert.ToInt32(scaleArr[1]);
+                        }
+                    }
+
+                    if (model.Scale <= 0 || !model.Scale.ToString().EndsWith("0"))
+                    {
+                        model.Length = Convert.ToDouble(length.Replace(',', '.'));
+                        model.Scale = 0;
+                    }
                 }
                 else
                 {

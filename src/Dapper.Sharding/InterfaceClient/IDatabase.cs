@@ -808,7 +808,7 @@ namespace Dapper.Sharding
                                 {
                                     if (!dbColumns.Any(a => a.ToLower().Equals(item.Name.ToLower())))
                                     {
-                                        manager.AddColumn(item.Name, item.CsType, item.Length, item.Comment, item.DbType);
+                                        manager.AddColumn(item.Name, item.CsType, item.Length, item.Comment, item.DbType, item.Scale);
                                     }
                                 }
 
@@ -924,7 +924,14 @@ namespace Dapper.Sharding
                         {
                             item.Comment = item.Comment.Replace("\r", "").Replace("\n", "");
                         }
-                        sb.Append($"        [Column({item.Length}, \"{item.Comment}\")]");
+                        if (item.CsType == typeof(decimal) && item.Scale > 0)
+                        {
+                            sb.Append($"        [Column({item.Length}, \"{item.Comment}\", scale: {item.Scale})]");
+                        }
+                        else
+                        {
+                            sb.Append($"        [Column({item.Length}, \"{item.Comment}\")]");
+                        }
                         sb.AppendLine();
                     }
                     if (DbType == DataBaseType.ClickHouse)
