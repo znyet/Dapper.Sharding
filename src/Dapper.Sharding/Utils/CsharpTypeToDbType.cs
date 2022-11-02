@@ -95,7 +95,7 @@ namespace Dapper.Sharding
                 case DataBaseType.Sqlite: return CreateSqliteType(type);
                 case DataBaseType.SqlServer: return CreateSqlServerType(type, dbVersion, length, scale);
                 case DataBaseType.Postgresql: return CreatePostgresqlType(type, length, scale);
-                case DataBaseType.Oracle: return CreateOracleType(type, length);
+                case DataBaseType.Oracle: return CreateOracleType(type, length, scale);
                 case DataBaseType.ClickHouse: return CreateClickHouseType(type, length, scale);
             }
             throw new Exception("CsharpTypeToDbType no found");

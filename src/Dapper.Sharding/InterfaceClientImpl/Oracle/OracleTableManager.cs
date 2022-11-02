@@ -187,70 +187,69 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                 }
                 else if (t == "NUMBER")
                 {
+                    model.DbLength = $"{len2},{scale}";
                     if (model.Scale > 0 && model.Scale.ToString().EndsWith("0"))
                     {
-                        model.Length = Convert.ToDouble(row.ColumnLength);
+                        model.Length = len2;
                     }
                     else
                     {
                         model.Length = Convert.ToDouble($"{len2}.{scale}");
-                        model.Scale = 0;
-                    }
-                    model.DbLength = $"{len2},{scale}";
-
-                    if (scale != 0)
-                    {
-                        model.DbLength = $"{len2},{scale}";
-                        if (len2 == 7 && scale == 3)
+                        if (scale != 0)
                         {
-                            model.CsType = typeof(float);
-                            model.CsStringType = "float";
-                        }
-                        else if (len2 == 15 && scale == 5)
-                        {
-                            model.CsType = typeof(double);
-                            model.CsStringType = "double";
+                            model.DbLength = $"{len2},{scale}";
+                            if (len2 == 7 && scale == 3)
+                            {
+                                model.CsType = typeof(float);
+                                model.CsStringType = "float";
+                            }
+                            else if (len2 == 15 && scale == 5)
+                            {
+                                model.CsType = typeof(double);
+                                model.CsStringType = "double";
+                            }
+                            else
+                            {
+                                model.CsType = typeof(decimal);
+                                model.CsStringType = "decimal";
+                            }
                         }
                         else
                         {
-                            model.CsType = typeof(decimal);
-                            model.CsStringType = "decimal";
+                            if (len == 0 && len2 == 0 && scale == 0)
+                            {
+                                model.Length = 0;
+                                model.DbLength = "0";
+                                model.CsType = typeof(decimal);
+                                model.CsStringType = "decimal";
+                            }
+                            else if (len2 == 1)
+                            {
+                                model.CsType = typeof(bool);
+                                model.CsStringType = "bool";
+                            }
+                            else if (len2 <= 3)
+                            {
+                                model.CsType = typeof(byte);
+                                model.CsStringType = "byte";
+                            }
+                            else if (len2 <= 5)
+                            {
+                                model.CsType = typeof(short);
+                                model.CsStringType = "short";
+                            }
+                            else if (len2 <= 10)
+                            {
+                                model.CsType = typeof(int);
+                                model.CsStringType = "int";
+                            }
+                            else if (len2 <= 19)
+                            {
+                                model.CsType = typeof(long);
+                                model.CsStringType = "long";
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (len == 0 && len2 == 0 && scale == 0)
-                        {
-                            model.Length = 0;
-                            model.DbLength = "0";
-                            model.CsType = typeof(decimal);
-                            model.CsStringType = "decimal";
-                        }
-                        else if (len2 == 1)
-                        {
-                            model.CsType = typeof(bool);
-                            model.CsStringType = "bool";
-                        }
-                        else if (len2 <= 3)
-                        {
-                            model.CsType = typeof(byte);
-                            model.CsStringType = "byte";
-                        }
-                        else if (len2 <= 5)
-                        {
-                            model.CsType = typeof(short);
-                            model.CsStringType = "short";
-                        }
-                        else if (len2 <= 10)
-                        {
-                            model.CsType = typeof(int);
-                            model.CsStringType = "int";
-                        }
-                        else if (len2 <= 19)
-                        {
-                            model.CsType = typeof(long);
-                            model.CsStringType = "long";
-                        }
+                        model.Scale = 0;
                     }
                 }
 
