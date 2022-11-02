@@ -752,7 +752,9 @@ namespace Dapper.Sharding
 
             if (type == typeof(string))
             {
-                if (length <= -1)
+                if (length == -1)
+                    return "NCLOB";
+                if (length == -2)
                     return "CLOB";
                 if (length <= 0)
                     length = 50;

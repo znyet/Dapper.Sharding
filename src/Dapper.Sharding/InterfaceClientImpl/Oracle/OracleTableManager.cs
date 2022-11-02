@@ -168,9 +168,15 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                     model.Length = len;
                     model.DbLength = len.ToString();
                 }
-                else if (t == "CLOB")
+                else if (t == "NCLOB")
                 {
                     model.Length = -1;
+                    model.DbLength = "4000";
+
+                }
+                else if (t == "CLOB")
+                {
+                    model.Length = -2;
                     model.DbLength = "4000";
 
                 }

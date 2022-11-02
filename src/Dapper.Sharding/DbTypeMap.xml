@@ -192,6 +192,7 @@
 		<DbType Name="VARCHAR2" To="string" />
 		<DbType Name="NVARCHAR2" To="string" />
 		<DbType Name="CLOB" To="string" />
+		<DbType Name="NCLOB" To="string" />
 		<DbType Name="XML" To="string"/>
 		<DbType Name="UNIQUEIDENTIFIER" To="Guid"/>
 		<DbType Name="DATE" To="DateTime"/>
