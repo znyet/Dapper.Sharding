@@ -30,7 +30,7 @@ namespace Dapper.Sharding
                     }
                     if (dbType == DataBaseType.Oracle)
                     {
-                        return "CLOB";
+                        return "NCLOB";
                     }
                     if (dbType == DataBaseType.SqlServer)
                     {
@@ -56,7 +56,7 @@ namespace Dapper.Sharding
                         }
                         else if (dbType == DataBaseType.Oracle)
                         {
-                            return "CLOB";
+                            return "NCLOB";
                         }
                         else
                         {
@@ -75,7 +75,7 @@ namespace Dapper.Sharding
                         }
                         else if (dbType == DataBaseType.Oracle)
                         {
-                            return "CLOB";
+                            return "NCLOB";
                         }
                         else if (dbType == DataBaseType.ClickHouse)
                         {
