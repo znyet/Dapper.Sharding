@@ -34,7 +34,11 @@ namespace Dapper.Sharding
         public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
-            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset))
+#if CORE6
+            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
+#else
+            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
+#endif
             {
                 dbType += " DEFAULT 0";
             }

@@ -31,7 +31,7 @@
                     else
                     {
                         //使用ROW_NUMBER()
-                        return $"WITH cte AS(SELECT ROW_NUMBER() OVER({sqlOrderBy.Trim()}) AS Row_Number,{returnFields} FROM ({sqlTable}) AS UTable{string.Concat(sqlWhere, sqlGroupBy, sqlHaving)}) SELECT {returnFields} FROM cte WHERE cte.Row_Number BETWEEN {skip + 1} AND {skip + take}";
+                        return $"SELECT {returnFields} FROM (SELECT ROW_NUMBER() OVER({sqlOrderBy.Trim()}) AS Row_Number,{returnFields} FROM ({sqlTable}) AS UTable{string.Concat(sqlWhere, sqlGroupBy, sqlHaving)}) A WHERE Row_Number BETWEEN {skip + 1} AND {skip + take}";
                     }
                 }
 

@@ -227,7 +227,7 @@ namespace Dapper.Sharding
                 else
                 {
                     //使用ROW_NUMBER()
-                    return $"WITH cte AS(SELECT ROW_NUMBER() OVER({orderby.SetOrderBy(SqlField.PrimaryKey)}) AS Row_Number,{returnFields} FROM [{Name}] {where}) SELECT * FROM cte WHERE cte.Row_Number BETWEEN {skip + 1} AND {skip + take}";
+                    return $"SELECT {returnFields} FROM (SELECT ROW_NUMBER() OVER({orderby.SetOrderBy(SqlField.PrimaryKey)}) AS Row_Number,{returnFields} FROM [{Name}] {where}) A WHERE Row_Number BETWEEN {skip + 1} AND {skip + take}";
                 }
             }
 

@@ -33,12 +33,16 @@ namespace Dapper.Sharding
         public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
-            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset))
+#if CORE6
+            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
+#else
+            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
+#endif
             {
                 dbType += " DEFAULT 0";
             }
             DataBase.Execute($"ALTER TABLE {DataBase.Client.Config.UserId.ToUpper()}.{Name.ToUpper()} ADD({name.ToUpper()} {dbType})");
-
+            DataBase.Execute($"COMMENT ON COLUMN {Name.ToUpper()}.{name.ToUpper()} IS '{comment}'");
         }
 
         public override void DropColumn(string name)
@@ -228,11 +232,6 @@ WHERE C.TABLE_NAME = '{Name.ToUpper()}' ORDER BY C.COLUMN_ID";
                                 model.DbLength = "0";
                                 model.CsType = typeof(decimal);
                                 model.CsStringType = "decimal";
-                            }
-                            else if (len2 == 1)
-                            {
-                                model.CsType = typeof(bool);
-                                model.CsStringType = "bool";
                             }
                             else if (len2 <= 3)
                             {
