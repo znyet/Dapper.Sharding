@@ -35,21 +35,24 @@ namespace Dapper.Sharding
         public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
-#if CORE6
-            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
-#else
-            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
-#endif
+            if (string.IsNullOrEmpty(columnType))
             {
-                if (t != typeof(bool))
+#if CORE6
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
+#else
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
+#endif
                 {
-                    dbType += " DEFAULT 0";
-                }
-                else
-                {
-                    dbType += " DEFAULT FALSE";
-                }
+                    if (t != typeof(bool))
+                    {
+                        dbType += " DEFAULT 0";
+                    }
+                    else
+                    {
+                        dbType += " DEFAULT FALSE";
+                    }
 
+                }
             }
             if (string.IsNullOrEmpty(comment))
             {
@@ -69,7 +72,35 @@ namespace Dapper.Sharding
         public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
+            if (string.IsNullOrEmpty(columnType))
+            {
+#if CORE6
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
+#else
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
+#endif
+                {
+                    if (t != typeof(bool))
+                    {
+                        dbType += " DEFAULT 0";
+                    }
+                    else
+                    {
+                        dbType += " DEFAULT FALSE";
+                    }
+
+                }
+            }
             DataBase.Execute($"ALTER TABLE {Name} ALTER COLUMN {name} TYPE {dbType}");
+            if (!string.IsNullOrEmpty(comment))
+            {
+                DataBase.Execute($"COMMENT ON COLUMN \"public\".\"{Name.ToLower()}\".\"{name.ToLower()}\" IS '{comment}';");
+            }
+        }
+
+        public override void ReNameColumn(string name, string newName, Type t = null, double length = 0, string comment = null, string columnType = null, int scale = 0)
+        {
+            DataBase.Execute($"ALTER TABLE \"public\".\"{Name.ToLower()}\" RENAME COLUMN \"{name.ToLower()}\" TO \"{newName.ToLower()}\"");
         }
 
         public override List<IndexEntity> GetIndexEntityList()
@@ -88,7 +119,7 @@ LEFT OUTER JOIN PG_DESCRIPTION D ON C.INDEXRELID=D.OBJOID,
 PG_INDEXES A
 WHERE
 A.SCHEMANAME=E.SCHEMANAME AND A.TABLENAME=E.RELNAME AND A.INDEXNAME=E.INDEXRELNAME
-AND E.SCHEMANAME='public' AND E.RELNAME='{Name}'";
+AND E.SCHEMANAME='public' AND E.RELNAME='{Name.ToLower()}'";
 
             var sql2 = $@"select
     i.relname as name,
@@ -107,7 +138,7 @@ where
     and a.attnum = ANY(ix.indkey)
     and t.relkind = 'r'
     and dd.schemaname='public'
-    and t.relname='{Name}'
+    and t.relname='{Name.ToLower()}'
 group by
     t.relname,
     i.relname
@@ -160,7 +191,7 @@ order by
         {
             if (tb == null)
                 tb = new TableEntity();
-            var sql1 = $@"set session myapp.name='{Name}';
+            var sql1 = $@"set session myapp.name='{Name.ToLower()}';
 SELECT 
 a.attname as name,
 col_description(a.attrelid,a.attnum) as comment,
@@ -169,7 +200,7 @@ FROM pg_class as c,pg_attribute as a, pg_type t
 where c.relname=current_setting('myapp.name') and a.attrelid =c.oid and a.attnum>0 and a.atttypid=t.oid 
 and exists(SELECT 1 from PG_STAT_ALL_TABLES WHERE schemaname='public' and RELNAME=current_setting('myapp.name') and relid=c.oid)";
 
-            var sql2 = $@"set session myapp.name='{Name}';
+            var sql2 = $@"set session myapp.name='{Name.ToLower()}';
 select DISTINCT * FROM(
 select column_name as name,
 case  when position('nextval' in column_default)>0 then 1 else 0 end as IsIdentity, 

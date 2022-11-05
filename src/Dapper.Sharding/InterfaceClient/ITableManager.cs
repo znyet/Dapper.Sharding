@@ -31,6 +31,8 @@ namespace Dapper.Sharding
 
         public abstract void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0);
 
+        public abstract void ReNameColumn(string name, string newName, Type t = null, double length = 0, string comment = null, string columnType = null, int scale = 0);
+
         public abstract List<IndexEntity> GetIndexEntityList();
 
         public abstract List<ColumnEntity> GetColumnEntityList(TableEntity tb = null, bool firstCharToUpper = false);

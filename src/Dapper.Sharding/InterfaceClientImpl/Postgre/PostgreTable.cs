@@ -289,7 +289,7 @@ namespace Dapper.Sharding
             {
                 name = Name;
             }
-            DataBase.Execute($"select setval('{name}_id_seq',(select max({SqlField.PrimaryKey}) from {name}))");
+            DataBase.Execute($"select setval('{name.ToLower()}_id_seq',(select max({SqlField.PrimaryKey}) from {name.ToLower()}))");
         }
 
 

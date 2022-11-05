@@ -55,6 +55,31 @@ namespace Dapper.Sharding
         {
             var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
             DataBase.Execute($"alter table [{Name}] alter column [{name}] {dbType}");
+
+            if (!string.IsNullOrEmpty(comment))
+            {
+                DataBase.Execute($@"
+IF ((SELECT COUNT(*) FROM ::fn_listextendedproperty('MS_Description',
+'SCHEMA', N'dbo',
+'TABLE', N'{Name}',
+'COLUMN', N'{name}')) > 0)
+  EXEC sp_updateextendedproperty
+'MS_Description', N'{comment}',
+'SCHEMA', N'dbo',
+'TABLE', N'ZTEST',
+'COLUMN', N'Name'
+ELSE
+  EXEC sp_addextendedproperty
+'MS_Description', N'{comment}',
+'SCHEMA', N'dbo',
+'TABLE', N'{Name}',
+'COLUMN', N'{name}'");
+            }
+        }
+
+        public override void ReNameColumn(string name, string newName, Type t = null, double length = 0, string comment = null, string columnType = null, int scale = 0)
+        {
+            DataBase.Execute($"EXEC sp_rename '[dbo].[{Name}].[{name}]', '{newName}', 'COLUMN'");
         }
 
         public override List<IndexEntity> GetIndexEntityList()

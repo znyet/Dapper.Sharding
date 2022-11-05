@@ -1,0 +1,21 @@
+{
+    "Server": "127.0.0.1",
+    "UserId": "sa",
+    "Password": "123456",
+    "AutoCreateDatabase": true,
+    "AutoCreateTable": true,
+    "AutoCompareTableColumn": true,
+    "AutoCompareTableColumnDelete": true,
+    "Database": "test",
+    "node": {
+        "Server": "127.0.0.2",
+        "UserId": "saa",
+        "Password": "1234567",
+        "AutoCreateDatabase": true,
+        "AutoCreateTable": true,
+        "AutoCompareTableColumn": true,
+        "AutoCompareTableColumnDelete": true,
+        "Database": "test2"
+    }
+
+}

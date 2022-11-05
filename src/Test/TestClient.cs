@@ -80,7 +80,7 @@ namespace Test
             await Task.WhenAll(task1, task2);
             Console.WriteLine(task1.Result.Equals(task2.Result));
             Console.WriteLine("没问题");
-          
+
         }
 
         [Test]
@@ -99,6 +99,17 @@ namespace Test
             await Task.WhenAll(task1, task2);
             Console.WriteLine(task1.Result.Equals(task2.Result));
             Console.WriteLine("没问题");
+        }
+
+        [Test]
+        public void LoadConfig()
+        {
+            var c1 = ConfigSystemTextJson.LoadConfig("db.json");
+            var c2 = ConfigJsonNet.LoadConfig("db.json");
+
+            var c3 = ConfigSystemTextJson.LoadConfig("db.json", "node");
+            var c4 = ConfigJsonNet.LoadConfig("db.json", "node");
+
         }
 
     }

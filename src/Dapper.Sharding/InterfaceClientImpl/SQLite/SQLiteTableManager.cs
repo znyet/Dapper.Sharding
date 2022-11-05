@@ -31,13 +31,16 @@ namespace Dapper.Sharding
         public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType);
-#if CORE6
-            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
-#else
-            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
-#endif
+            if (string.IsNullOrEmpty(columnType))
             {
-                dbType += " DEFAULT 0";
+#if CORE6
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
+#else
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
+#endif
+                {
+                    dbType += " DEFAULT 0";
+                }
             }
             DataBase.Execute($"ALTER TABLE {Name} ADD COLUMN {name} {dbType}");
         }
@@ -48,6 +51,11 @@ namespace Dapper.Sharding
         }
 
         public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ReNameColumn(string name, string newName, Type t = null, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             throw new NotImplementedException();
         }

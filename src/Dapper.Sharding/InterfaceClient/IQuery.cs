@@ -291,6 +291,13 @@ namespace Dapper.Sharding
             return union;
         }
 
+        public IUnion Union(string sql)
+        {
+            var union = db.CreateUnion(sql);
+            union.Union(this);
+            return union;
+        }
+
         public IUnion UnionAll(params IQuery[] querys)
         {
             var union = db.CreateUnion();
@@ -299,6 +306,13 @@ namespace Dapper.Sharding
             {
                 union.UnionAll(item);
             }
+            return union;
+        }
+
+        public IUnion UnionAll(string sql)
+        {
+            var union = db.CreateUnion(sql);
+            union.UnionAll(this);
             return union;
         }
 

@@ -17,11 +17,11 @@ namespace Dapper.Sharding
         {
             if (indexType == IndexType.Normal)
             {
-                DataBase.Execute($"CREATE INDEX {DataBase.Client.Config.UserId.ToUpper()}.\"{Name}_{name}\" ON {DataBase.Client.Config.UserId.ToUpper()}.\"{Name.ToUpper()}\" ({columns})");
+                DataBase.Execute($"CREATE INDEX {DataBase.Name.ToUpper()}.\"{Name}_{name}\" ON {DataBase.Name.ToUpper()}.\"{Name.ToUpper()}\" ({columns})");
             }
             else if (indexType == IndexType.Unique)
             {
-                DataBase.Execute($"CREATE UNIQUE INDEX {DataBase.Client.Config.UserId.ToUpper()}.\"{Name}_{name}\" ON {DataBase.Client.Config.UserId.ToUpper()}.\"{Name.ToUpper()}\" ({columns})");
+                DataBase.Execute($"CREATE UNIQUE INDEX {DataBase.Name.ToUpper()}.\"{Name}_{name}\" ON {DataBase.Name.ToUpper()}.\"{Name.ToUpper()}\" ({columns})");
             }
         }
 
@@ -33,16 +33,22 @@ namespace Dapper.Sharding
         public override void AddColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
             var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
-#if CORE6
-            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
-#else
-            if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
-#endif
+            if (string.IsNullOrEmpty(columnType))
             {
-                dbType += " DEFAULT 0";
+#if CORE6
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
+#else
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
+#endif
+                {
+                    dbType += " DEFAULT 0";
+                }
             }
-            DataBase.Execute($"ALTER TABLE {DataBase.Client.Config.UserId.ToUpper()}.{Name.ToUpper()} ADD({name.ToUpper()} {dbType})");
-            DataBase.Execute($"COMMENT ON COLUMN {Name.ToUpper()}.{name.ToUpper()} IS '{comment}'");
+            DataBase.Execute($"ALTER TABLE {DataBase.Name.ToUpper()}.{Name.ToUpper()} ADD({name.ToUpper()} {dbType})");
+            if (!string.IsNullOrEmpty(comment))
+            {
+                DataBase.Execute($"COMMENT ON COLUMN {Name.ToUpper()}.{name.ToUpper()} IS '{comment}'");
+            }
         }
 
         public override void DropColumn(string name)
@@ -52,7 +58,28 @@ namespace Dapper.Sharding
 
         public override void ModifyColumn(string name, Type t, double length = 0, string comment = null, string columnType = null, int scale = 0)
         {
-            throw new NotImplementedException();
+            var dbType = CsharpTypeToDbType.Create(DataBase.DbType, DataBase.DbVersion, t, length, columnType, scale);
+            if (string.IsNullOrEmpty(columnType))
+            {
+#if CORE6
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateOnly) && t != typeof(TimeOnly) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?) && t != typeof(DateOnly?) && t != typeof(TimeOnly?))
+#else
+                if (t.IsValueType && t != typeof(DateTime) && t != typeof(DateTimeOffset) && t != typeof(DateTime?) && t != typeof(DateTimeOffset?))
+#endif
+                {
+                    dbType += " DEFAULT 0";
+                }
+            }
+            DataBase.Execute($"ALTER TABLE {Name.ToUpper()} MODIFY({name.ToUpper()} {dbType})");
+            if (!string.IsNullOrEmpty(comment))
+            {
+                DataBase.Execute($"COMMENT ON COLUMN {Name.ToUpper()}.{name.ToUpper()} IS '{comment}'");
+            }
+        }
+
+        public override void ReNameColumn(string name, string newName, Type t = null, double length = 0, string comment = null, string columnType = null, int scale = 0)
+        {
+            DataBase.Execute($"ALTER TABLE \"{DataBase.Name.ToUpper()}\".\"{Name.ToUpper()}\" RENAME COLUMN \"{name.ToUpper()}\" TO \"{newName.ToUpper()}\"");
         }
 
         public override List<IndexEntity> GetIndexEntityList()
@@ -65,7 +92,7 @@ from dba_ind_columns col, dba_indexes idx
 where col.index_name = idx.index_name
 and col.table_name = idx.table_name
 and col.table_owner = idx.table_owner
-and col.table_owner = '{DataBase.Client.Config.UserId.ToUpper()}'
+and col.table_owner = '{DataBase.Name.ToUpper()}'
 and col.table_name = '{Name.ToUpper()}'";
 
             IEnumerable<dynamic> data = DataBase.Query(sql);
