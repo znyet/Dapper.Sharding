@@ -222,3 +222,34 @@ NpgsqlGeoFactory.UseGeo();
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 ```
+```javascript
+{
+    "Server": "127.0.0.1",
+    "UserId": "sa",
+    "Password": "123456",
+    "AutoCreateDatabase": true,
+    "AutoCreateTable": true,
+    "AutoCompareTableColumn": true,
+    "AutoCompareTableColumnDelete": true,
+    "Database": "test",
+    "node": {
+        "Server": "127.0.0.2",
+        "UserId": "saa",
+        "Password": "1234567",
+        "AutoCreateDatabase": true,
+        "AutoCreateTable": true,
+        "AutoCompareTableColumn": true,
+        "AutoCompareTableColumnDelete": true,
+        "Database": "test2"
+    }
+
+}
+```
+```csharp
+//load json config
+var c1 = ConfigSystemTextJson.LoadConfig("db.json");
+var c2 = ConfigJsonNet.LoadConfig("db.json");
+
+var c3 = ConfigSystemTextJson.LoadConfig("db.json", "node");
+var c4 = ConfigJsonNet.LoadConfig("db.json", "node");
+```
