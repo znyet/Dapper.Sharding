@@ -223,6 +223,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 ```
 ```javascript
+//json config
 {
     "Server": "127.0.0.1",
     "UserId": "sa",
